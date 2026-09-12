@@ -122,6 +122,9 @@ with st.sidebar:
     ejecutar = st.button("Ejecutar análisis", type="primary", use_container_width=True)
 
 if ejecutar:
+    st.session_state.pop("resultado", None)
+    st.session_state.pop("controles_salida", None)
+    st.session_state.pop("tokens", None)
     if not archivos:
         st.error("Seleccioná al menos un CSV normalizado o un ZIP de Scentia.")
         st.stop()
@@ -178,8 +181,11 @@ if ejecutar:
             responses = [response]
             if infracciones:
                 correccion = (
-                    prompt
-                    + "\n\nLa primera respuesta incumplió estos controles automáticos:\n- "
+                    "Revisá el siguiente borrador JSON sin recalcular ni inventar valores. "
+                    "Conservá toda la evidencia válida y corregí únicamente los incumplimientos indicados.\n\n"
+                    "BORRADOR:\n"
+                    + json.dumps(resultado_generado, ensure_ascii=False, indent=2)
+                    + "\n\nCONTROLES INCUMPLIDOS:\n- "
                     + "\n- ".join(infracciones)
                     + "\nCorregí todas las infracciones y devolvé nuevamente el JSON completo."
                 )
@@ -200,7 +206,14 @@ if ejecutar:
         st.session_state["resultado"] = resultado_generado
         st.session_state["tokens"] = [getattr(r, "usage_metadata", None) for r in responses]
     except Exception as error:
-        st.error(f"No se pudo completar la corrida: {error}")
+        mensaje = str(error)
+        if "429" in mensaje or "RESOURCE_EXHAUSTED" in mensaje:
+            st.error(
+                "Gemini alcanzó temporalmente el límite de uso. Esperá un minuto y volvé a ejecutar; "
+                "la aplicación no conservará un resultado anterior como si fuera nuevo."
+            )
+        else:
+            st.error(f"No se pudo completar la corrida: {error}")
 
 resultado = st.session_state.get("resultado")
 if not resultado:
