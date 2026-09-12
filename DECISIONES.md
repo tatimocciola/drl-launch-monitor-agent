@@ -27,3 +27,26 @@ El agente deberá distinguir evidencia, diagnóstico, limitaciones y acción sug
 ### Motivo
 
 Priorizo construir un sistema pequeño, funcional, comprensible y reproducible. Las funciones descartadas podrán considerarse como mejoras futuras una vez validado el núcleo del agente.
+
+## Iteración 1 — Incorporación de fuentes reales y protección de datos
+
+### Hallazgo
+
+Al revisar los archivos reales observé que las fuentes tienen coberturas diferentes:
+
+* Logyt contiene sell-out de cadenas, pero el archivo recibido no incluye stock.
+* Sell-out de distribuidores contiene clientes compradores por área, pero no volumen.
+* Scentia contiene volumen, distribución ponderada y distribución numérica hasta julio de 2026.
+* Scentia contiene los cuatro sabores core en 1 L, pero no Green Apple ni Red Berries en 473 ml.
+
+### Decisión sobre el alcance
+
+Incorporé Scentia como cuarta fuente porque permite observar sell-out a consumidor final y distribución para los productos disponibles. El agente debe declarar las ausencias y no completar información por inferencia.
+
+### Decisión sobre confidencialidad
+
+El repositorio es público y los archivos originales contienen información comercial interna. Por ese motivo, las corridas publicadas utilizarán datos derivados de fuentes reales, pero anonimizados mediante índices.
+
+Para cada fuente y calibre, el total DR LEMON del primer período comparable se expresa como índice 100. Los demás valores mantienen su relación respecto de esa base. Esta transformación conserva tendencias, variaciones y participaciones, pero evita publicar los volúmenes reales.
+
+Los archivos originales no se incluyen en el repositorio. La Brand Manager conserva el acceso a las fuentes y valida que la transformación no altere las conclusiones.
