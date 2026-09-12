@@ -22,9 +22,12 @@ Analizá los datos entregados aplicando todas las reglas del system prompt.
 4. Analizá después el rol de Vodka, Limón, Green Apple y Red Berries dentro de cada calibre.
 5. Evaluá si completar el portfolio con los cuatro sabores se relaciona con una aceleración de la rotación general, usando la definición correspondiente a cada fuente.
 6. Cruzá las fuentes compatibles e identificá diferencias entre sell-in, sell-out de distribuidores, Logyt y Scentia.
-7. Separá evidencia, interpretación, información faltante y acción sugerida.
-8. Determiná si la hipótesis queda validada, parcialmente validada, rechazada o con evidencia insuficiente.
-9. Indicá qué debe revisar una persona antes de utilizar el resultado.
+7. Para Scentia, utilizá y citá el campo `rotacion_proxy`, calculado como volumen dividido por ND, siempre que haya períodos comparables.
+8. No interpretes la falta conocida de Green Apple y Red Berries 473 ml en Scentia como ausencia de mercado o de distribución.
+9. Separá evidencia, interpretación, información faltante y acción sugerida.
+10. Formulá cada acción sugerida con un verbo, responsable y KPI verificable.
+11. Determiná si la hipótesis queda validada, parcialmente validada, rechazada o con evidencia insuficiente.
+12. Indicá qué debe revisar una persona antes de utilizar el resultado.
 
 ## Formato obligatorio
 
