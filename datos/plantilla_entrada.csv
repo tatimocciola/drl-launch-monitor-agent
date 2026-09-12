@@ -1,1 +1,1 @@
-periodo,temporalidad,fuente,area,calibre_ml,sabor,volumen_cc,clientes_con_compra,stock_cc
+periodo,temporalidad,fuente,area,calibre_ml,sabor,volumen_cc,clientes_con_compra,stock_cc,volumen_fytd_cc,wd_pct,nd_pct
