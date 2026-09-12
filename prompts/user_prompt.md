@@ -20,8 +20,8 @@ Analizá los datos entregados aplicando todas las reglas del system prompt.
 2. Identificá las fuentes, los períodos y las temporalidades disponibles.
 3. Analizá primero el desempeño general de DR LEMON en 473 ml y 1 L.
 4. Analizá después el rol de Vodka, Limón, Green Apple y Red Berries dentro de cada calibre.
-5. Evaluá si completar el portfolio con los cuatro sabores se relaciona con una aceleración de la rotación proxy general.
-6. Identificá diferencias entre sell-in, sell-out de distribuidores y Logyt.
+5. Evaluá si completar el portfolio con los cuatro sabores se relaciona con una aceleración de la rotación general, usando la definición correspondiente a cada fuente.
+6. Cruzá las fuentes compatibles e identificá diferencias entre sell-in, sell-out de distribuidores, Logyt y Scentia.
 7. Separá evidencia, interpretación, información faltante y acción sugerida.
 8. Determiná si la hipótesis queda validada, parcialmente validada, rechazada o con evidencia insuficiente.
 9. Indicá qué debe revisar una persona antes de utilizar el resultado.
@@ -83,7 +83,6 @@ Utilizá exactamente esta estructura:
       "kpi_seguimiento": "",
       "confianza": "alta|media|baja"
     }
-  ],
   ],
   "dashboard": {
     "hallazgos": [
