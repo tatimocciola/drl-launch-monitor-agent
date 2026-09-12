@@ -7,6 +7,7 @@ from google import genai
 from google.genai import types
 
 from ejecutar_agente import RESPONSE_SCHEMA, leer_prompt, validar_y_preparar
+from preparar_scentia import normalizar_scentia_zip
 
 
 st.set_page_config(page_title="DRL Core Portfolio Agent", page_icon="📊", layout="wide")
@@ -37,7 +38,7 @@ st.caption("Evaluación supervisada del rol de Vodka, Limón, Green Apple y Red 
 
 with st.sidebar:
     st.header("Nueva corrida")
-    archivo = st.file_uploader("Archivo CSV normalizado", type=["csv"])
+    archivo = st.file_uploader("CSV normalizado o ZIP Scentia", type=["csv", "zip"])
     corrida_id = st.text_input("ID de corrida", value="corrida_01")
     modelo = st.text_input("Modelo", value="gemini-3.5-flash-lite")
     clave_configurada = os.getenv("GEMINI_API_KEY", "")
@@ -50,14 +51,22 @@ with st.sidebar:
 
 if ejecutar:
     if archivo is None:
-        st.error("Seleccioná un archivo CSV.")
+        st.error("Seleccioná un archivo CSV normalizado o un ZIP de Scentia.")
         st.stop()
     if not clave:
         st.error("Ingresá la Gemini API key. La aplicación no la guarda.")
         st.stop()
 
     try:
-        df, _ = validar_y_preparar(archivo)
+        if archivo.name.lower().endswith(".zip"):
+            entrada = normalizar_scentia_zip(archivo.getvalue())
+            st.caption(
+                f"Scentia procesado: {len(entrada)} registros agregados e indexados. "
+                "La base original no se envía al modelo."
+            )
+        else:
+            entrada = archivo
+        df, _ = validar_y_preparar(entrada)
         raiz = __import__("pathlib").Path(__file__).resolve().parent
         system_prompt = leer_prompt(raiz / "prompts" / "system_prompt.md")
         user_template = leer_prompt(raiz / "prompts" / "user_prompt.md")

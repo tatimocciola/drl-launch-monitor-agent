@@ -5,8 +5,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
-from google import genai
-from google.genai import types
 
 
 COLUMNAS_OBLIGATORIAS = [
@@ -153,7 +151,10 @@ RESPONSE_SCHEMA = {
 
 
 def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, list[str]]:
-    df = pd.read_csv(ruta_csv, dtype={"periodo": "string", "temporalidad": "string", "fuente": "string", "area": "string", "sabor": "string"})
+    if isinstance(ruta_csv, pd.DataFrame):
+        df = ruta_csv.copy()
+    else:
+        df = pd.read_csv(ruta_csv, dtype={"periodo": "string", "temporalidad": "string", "fuente": "string", "area": "string", "sabor": "string"})
     faltantes = [columna for columna in COLUMNAS_OBLIGATORIAS if columna not in df.columns]
     if faltantes:
         raise ValueError(f"Faltan columnas obligatorias: {', '.join(faltantes)}")
@@ -238,6 +239,9 @@ def leer_prompt(ruta: Path) -> str:
 
 
 def main() -> None:
+    from google import genai
+    from google.genai import types
+
     parser = argparse.ArgumentParser(description="Ejecuta el DRL Core Portfolio Agent.")
     parser.add_argument("entrada", type=Path, help="Ruta al CSV normalizado")
     parser.add_argument("--corrida", required=True, help="Identificador, por ejemplo corrida_01")
