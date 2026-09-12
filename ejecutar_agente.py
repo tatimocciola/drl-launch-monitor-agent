@@ -22,6 +22,9 @@ COLUMNAS_OBLIGATORIAS = [
     "volumen_fytd_cc",
     "wd_pct",
     "nd_pct",
+    "datos_anonimizados",
+    "unidad_volumen",
+    "base_indice",
 ]
 
 FUENTES_VALIDAS = {"sell_in", "sell_out_distribuidores", "logyt", "scentia"}
@@ -184,6 +187,21 @@ def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, list[str]]:
         errores.append(f"Calibres no reconocidos: {calibres_invalidos}")
     if df["volumen_cc"].isna().any():
         errores.append("Hay filas sin volumen_cc numérico.")
+    unidades_invalidas = sorted(set(df["unidad_volumen"].dropna()) - {"CC", "INDICE"})
+    if unidades_invalidas:
+        errores.append(f"Unidades de volumen no reconocidas: {unidades_invalidas}")
+    anonimizados = df["datos_anonimizados"].astype(str).str.lower().isin({"true", "1", "si", "sí"})
+    if (anonimizados & (df["unidad_volumen"] != "INDICE")).any():
+        errores.append("Las filas anonimizadas deben declarar unidad_volumen=INDICE.")
+    if (anonimizados & df["base_indice"].isna()).any():
+        errores.append("Las filas anonimizadas deben informar base_indice.")
+    bases_por_grupo = (
+        df.loc[anonimizados]
+        .groupby(["fuente", "calibre_ml"], dropna=False)["base_indice"]
+        .nunique(dropna=True)
+    )
+    if (bases_por_grupo > 1).any():
+        errores.append("Hay bases de índice incompatibles dentro de una misma fuente y calibre.")
     if errores:
         raise ValueError(" ".join(errores))
 
