@@ -111,6 +111,15 @@ La conclusión general sólo puede ser:
 * `rechazada`
 * `evidencia_insuficiente`
 
+## Tratamiento de datos anonimizados
+
+- Revisá el campo `datos_anonimizados` antes de interpretar cualquier magnitud.
+- Si `datos_anonimizados` es `true`, tratá volumen y stock como índices.
+- Citá siempre la base indicada en `base_indice`.
+- No presentes un índice como si fueran cajas convertidas, clientes reales o stock real.
+- Los índices permiten analizar evolución, mix y diferencias relativas, pero no permiten informar magnitudes absolutas.
+- Si distintas filas utilizan bases incompatibles, no las compares y registrá un problema de calidad de datos.
+
 ## Clasificación para el dashboard
 
 Clasificá los resultados en cuatro grupos:
