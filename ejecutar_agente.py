@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 from datetime import datetime, timezone
@@ -110,6 +111,29 @@ RESPONSE_SCHEMA = {
                 "required": ["prioridad", "nivel", "fuente", "periodo", "temporalidad", "evidencia", "interpretacion", "accion_sugerida", "responsable_sugerido", "kpi_seguimiento", "confianza"],
             },
         },
+        "dashboard": {
+            "type": "object",
+            "properties": {
+                categoria: {
+                    "type": "array",
+                    "maxItems": 3,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "titulo": {"type": "string"},
+                            "evidencia": {"type": "string"},
+                            "fuente": {"type": "string"},
+                            "periodo": {"type": "string"},
+                            "interpretacion": {"type": "string"},
+                            "confianza": {"type": "string", "enum": ["alta", "media", "baja"]},
+                        },
+                        "required": ["titulo", "evidencia", "fuente", "periodo", "interpretacion", "confianza"],
+                    },
+                }
+                for categoria in ["hallazgos", "oportunidades", "debilidades", "amenazas"]
+            },
+            "required": ["hallazgos", "oportunidades", "debilidades", "amenazas"],
+        },
         "contradicciones_entre_fuentes": {"type": "array", "items": {"type": "string"}},
         "revision_humana": {
             "type": "object",
@@ -121,7 +145,7 @@ RESPONSE_SCHEMA = {
             "required": ["requiere_revision_humana", "puntos_a_revisar", "responsable_final"],
         },
     },
-    "required": ["corrida", "calidad_datos", "resultado_hipotesis", "desempeno_por_calibre", "rol_por_sabor", "hallazgos_priorizados", "contradicciones_entre_fuentes", "revision_humana"],
+    "required": ["corrida", "calidad_datos", "resultado_hipotesis", "desempeno_por_calibre", "rol_por_sabor", "hallazgos_priorizados", "dashboard", "contradicciones_entre_fuentes", "revision_humana"],
 }
 
 
