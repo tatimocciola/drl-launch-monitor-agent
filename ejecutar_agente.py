@@ -1,4 +1,3 @@
-import argparse
 import json
 import os
 from datetime import datetime, timezone
@@ -19,9 +18,12 @@ COLUMNAS_OBLIGATORIAS = [
     "volumen_cc",
     "clientes_con_compra",
     "stock_cc",
+    "volumen_fytd_cc",
+    "wd_pct",
+    "nd_pct",
 ]
 
-FUENTES_VALIDAS = {"sell_in", "sell_out_distribuidores", "logyt"}
+FUENTES_VALIDAS = {"sell_in", "sell_out_distribuidores", "logyt", "scentia"}
 TEMPORALIDADES_VALIDAS = {"LM", "FYTD", "L12M"}
 SABORES_VALIDOS = {"VODKA", "LIMON", "GREEN_APPLE", "RED_BERRIES", "TOTAL_DRL"}
 CALIBRES_VALIDOS = {473, 1000}
@@ -132,7 +134,15 @@ def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, list[str]]:
         raise ValueError("El archivo no contiene filas de datos.")
 
     df = df[COLUMNAS_OBLIGATORIAS].copy()
-    for columna in ["calibre_ml", "volumen_cc", "clientes_con_compra", "stock_cc"]:
+    for columna in [
+        "calibre_ml",
+        "volumen_cc",
+        "clientes_con_compra",
+        "stock_cc",
+        "volumen_fytd_cc",
+        "wd_pct",
+        "nd_pct",
+    ]:
         df[columna] = pd.to_numeric(df[columna], errors="coerce")
 
     errores = []
@@ -196,7 +206,7 @@ def main() -> None:
     if not os.getenv("GEMINI_API_KEY"):
         raise EnvironmentError("Falta la variable GEMINI_API_KEY. No guardes la clave en el repositorio.")
 
-    raiz = Path(__file__).resolve().parents[1]
+    raiz = Path(__file__).resolve().parent
     system_prompt = leer_prompt(raiz / "prompts" / "system_prompt.md")
     user_template = leer_prompt(raiz / "prompts" / "user_prompt.md")
     df, _ = validar_y_preparar(args.entrada)
