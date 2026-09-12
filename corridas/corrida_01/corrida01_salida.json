@@ -1,0 +1,242 @@
+{
+  "corrida": {
+    "id": "corrida_01",
+    "fecha_ejecucion": "2026-09-12T03:24:54.490845+00:00",
+    "archivo": "corrida_01.csv.csv",
+    "fuentes_analizadas": [
+      "logyt"
+    ],
+    "periodos_analizados": [
+      "202509",
+      "202510",
+      "202511",
+      "202512",
+      "202601",
+      "202602",
+      "202603",
+      "202604",
+      "202605",
+      "202606",
+      "202607",
+      "202608"
+    ],
+    "temporalidades": [
+      "LM"
+    ]
+  },
+  "calidad_datos": {
+    "estado": "parcial",
+    "problemas_detectados": [
+      "Los datos provienen de una única fuente (Logyt), careciendo de Sell-in, Sell-out de distribuidores y Scentia.",
+      "Los datos se encuentran anonimizados en formato de índice (Base Total DRL por calibre en sep-2025 = 100), impidiendo observar volúmenes absolutos.",
+      "Faltan por completo las métricas de clientes con compra, rotación proxy, stock y cobertura geográfica (WD/ND)."
+    ],
+    "datos_faltantes_relevantes": [
+      "Sell-in en cajas convertidas de 9 litros y clientes con compra.",
+      "Sell-out de distribuidores con apertura geográfica.",
+      "Métricas de Scentia (distribución ponderada y numérica, volumen acumulado FYTD).",
+      "Datos de clientes con compra necesarios para el cálculo de la rotación proxy."
+    ]
+  },
+  "resultado_hipotesis": {
+    "estado": "evidencia_insuficiente",
+    "justificacion": "La información disponible se limita exclusivamente a Logyt en formato de índice de sell-out para cadenas de supermercados, sin datos de clientes con compra que permitan calcular la rotación proxy. Por lo tanto, no es posible demostrar ni rechazar fehacientemente que completar el portfolio acelere la rotación general.",
+    "nivel_confianza": "alto"
+  },
+  "desempeno_por_calibre": [
+    {
+      "calibre": "473 ml",
+      "evidencia": [
+        "El índice de volumen total pasó de 100.0 en 2025-09 a un pico de 168.548 en 2025-12, para luego descender a 68.929 en 2026-08.",
+        "El calibre 473 ml presenta datos de Green Apple solo en 2026-08 (índice 2.703) y ausencia total de Red Berries durante todo el período analizado."
+      ],
+      "interpretacion": "El calibre 473 ml muestra una fuerte estacionalidad con pico en diciembre de 2025 y posterior contracción hacia el invierno de 2026, operando de manera incompleta respecto a los cuatro sabores core propuestos en la hipótesis.",
+      "limitaciones": [
+        "Los valores representan índices basados en sep-2025 = 100, no volúmenes absolutos.",
+        "Ausencia de datos de clientes con compra y rotación proxy."
+      ]
+    },
+    {
+      "calibre": "1 L",
+      "evidencia": [
+        "El índice de volumen total en 1 L arrancó en 100.0 en 2025-09, alcanzó 188.162 en 2025-12, y cerró en 88.409 en 2026-08.",
+        "Contiene registros de Green Apple de manera intermitente (aparece en diciembre de 2025 y de marzo a agosto de 2026) y de Red Berries de manera continua."
+      ],
+      "interpretacion": "El calibre 1 L muestra mayor diversidad de sabores activos (incluyendo Red Berries y apariciones de Green Apple) con una estacionalidad de fin de año muy marcada similar al calibre de 473 ml.",
+      "limitaciones": [
+        "Datos anonimizados como índice sobre base Total DRL 1000 ml 2025-09 = 100.",
+        "Falta información de clientes con compra para evaluar rotación."
+      ]
+    }
+  ],
+  "rol_por_sabor": [
+    {
+      "sabor": "Limón",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Fuente Logyt, período sep-2025 a ago-2026, temporalidad LM. Su índice de volumen oscila entre 24.054 (ago-2026) y 52.513 (dic-2025).",
+        "Su mix de sabor dentro del calibre se mantiene estable en torno al 30%-38%."
+      ],
+      "interpretacion": "Conserva un rol de columna vertebral estables en el mix del calibre 473 ml.",
+      "dato_faltante": "Clientes con compra y rotación proxy."
+    },
+    {
+      "sabor": "Vodka",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Fuente Logyt, período sep-2025 a ago-2026, temporalidad LM. Su índice de volumen se mueve entre 14.824 (jun-2026) y 37.051 (dic-2025).",
+        "Su mix dentro del calibre ronda el 20%-25%."
+      ],
+      "interpretacion": "Actúa como el segundo pilar en importancia dentro del calibre 473 ml acompañando la estacionalidad.",
+      "dato_faltante": "Clientes con compra y rotación proxy."
+    },
+    {
+      "sabor": "Green Apple",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Fuente Logyt, período sep-2025 a ago-2026, temporalidad LM. Solo registra volumen positivo en agosto de 2026 con un índice de 2.703 (mix 3.92%).",
+        "En los demás meses presenta valores nulos o vacíos que no deben interpretarse como cero de forma arbitraria sin validación."
+      ],
+      "interpretacion": "Evidencia una presencia muy limitada o nula en la mayor parte del período analizado para este calibre.",
+      "dato_faltante": "Clientes con compra, rotación proxy y continuidad de datos."
+    },
+    {
+      "sabor": "Red Berries",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Fuente Logyt, período sep-2025 a ago-2026, temporalidad LM. Registra volumen en agosto de 2026 (índice 4.923, mix 7.14%) y ceros/vacíos el resto del período analizado según dataset."
+      ],
+      "interpretacion": "Participación esporádica o incompleta en el calibre 473 ml durante el horizonte analizado.",
+      "dato_faltante": "Clientes con compra y rotación proxy."
+    },
+    {
+      "sabor": "Limón",
+      "calibre": "1 L",
+      "evidencia": [
+        "Fuente Logyt, período sep-2025 a ago-2026, temporalidad LM. Índice de volumen entre 21.541 (may-2026) y 58.558 (dic-2025). Mix aprox. 30%-32%."
+      ],
+      "interpretacion": "Sabor principal y de mayor volumen absoluto dentro del calibre de 1 litro.",
+      "dato_faltante": "Clientes con compra y rotación proxy."
+    },
+    {
+      "sabor": "Vodka",
+      "calibre": "1 L",
+      "evidencia": [
+        "Fuente Logyt, período sep-2025 a ago-2026, temporalidad LM. Índice de volumen entre 25.706 (may-2026) y 70.628 (dic-2025). Mix aprox. 37%-41%."
+      ],
+      "interpretacion": "Lidera el mix de volumen dentro del calibre de 1 litro de manera consistente.",
+      "dato_faltante": "Clientes con compra y rotación proxy."
+    },
+    {
+      "sabor": "Green Apple",
+      "calibre": "1 L",
+      "evidencia": [
+        "Fuente Logyt, período sep-2025 a ago-2026, temporalidad LM. Registra ventas desde diciembre de 2025 (índice 0.311) y con mayor continuidad entre marzo y agosto de 2026 (llegando a un índice de 6.059 en julio de 2026).",
+        "Su mix dentro del calibre oscila entre 0.17% y 6.04%."
+      ],
+      "interpretacion": "Muestra una penetración gradual y consolidación progresiva en el calibre de 1 litro durante 2026.",
+      "dato_faltante": "Clientes con compra y rotación proxy."
+    },
+    {
+      "sabor": "Red Berries",
+      "calibre": "1 L",
+      "evidencia": [
+        "Fuente Logyt, período sep-2025 a ago-2026, temporalidad LM. Registra presencia continua todos los meses, con índices que van desde 5.308 (sep-2025) hasta 11.421 (dic-2025).",
+        "Su mix se mantiene estable entre 5% y 7%."
+      ],
+      "interpretacion": "Aporta volumen de manera sostenida y regular en el calibre de 1 litro.",
+      "dato_faltante": "Clientes con compra y rotación proxy."
+    }
+  ],
+  "hallazgos_priorizados": [
+    {
+      "prioridad": 1,
+      "nivel": "calibre",
+      "fuente": "logyt",
+      "periodo": "202509 - 202608",
+      "temporalidad": "LM",
+      "evidencia": "El volumen total indexado de ambos calibres muestra una estacionalidad muy marcada, con un pico máximo en diciembre de 2025 (168.5 en 473 ml y 188.2 en 1 L) y contracción hacia los meses invernales de 2026.",
+      "interpretacion": "El negocio de DR LEMON en cadenas de supermercados responde fuertemente a factores estacionales de fin de año.",
+      "accion_sugerida": "Comercial",
+      "responsable_sugerido": "Comercial",
+      "kpi_seguimiento": "Índice de volumen mensual Logyt",
+      "confianza": "alta"
+    },
+    {
+      "prioridad": 2,
+      "nivel": "sabor",
+      "fuente": "logyt",
+      "periodo": "202509 - 202608",
+      "temporalidad": "LM",
+      "evidencia": "En el calibre de 1 L, Red Berries mantiene presencia continua (mix de 5% a 7%) y Green Apple muestra incorporación sostenida a partir de 2026 (llegando a 6.04% de mix en julio de 2026).",
+      "interpretacion": "El calibre de 1 L muestra un portfolio de sabores más completo y desarrollado que el de 473 ml en las cadenas medidas por Logyt.",
+      "accion_sugerida": "Trade Marketing",
+      "responsable_sugerido": "Trade Marketing",
+      "kpi_seguimiento": "Mix de sabores por calibre en Logyt",
+      "confianza": "alta"
+    },
+    {
+      "prioridad": 3,
+      "nivel": "sabor",
+      "fuente": "logyt",
+      "periodo": "202509 - 202608",
+      "temporalidad": "LM",
+      "evidencia": "El calibre de 473 ml carece de registros estables de Green Apple y Red Berries durante la mayor parte del período, apareciendo recién de forma marginal hacia el final (agosto de 2026).",
+      "interpretacion": "Existe una disparidad en la implementación del portfolio completo entre el calibre de 1 L y el de 473 ml en los puntos de venta analizados.",
+      "accion_sugerida": "Comercial",
+      "responsable_sugerido": "Comercial",
+      "kpi_seguimiento": "Presencia de SKU's en Logyt",
+      "confianza": "alta"
+    }
+  ],
+  "dashboard": {
+    "hallazgos": [
+      {
+        "titulo": "Estacionalidad marcada de fin de año",
+        "evidencia": "El volumen total indexado en Logyt duplicó sus valores en diciembre de 2025 en comparación con septiembre de 2025 para ambos calibres.",
+        "fuente": "logyt",
+        "periodo": "202509 - 202512",
+        "interpretacion": "El consumo en cadenas de supermercados registra un pico estacional importante durante las festividades.",
+        "confianza": "alta"
+      },
+      {
+        "titulo": "Consolidación de Red Berries en 1 Litro",
+        "evidencia": "Red Berries en 1 L registra ventas todos los meses del período analizado con un mix estable entre 5% y 7%.",
+        "fuente": "logyt",
+        "periodo": "202509 - 202608",
+        "interpretacion": "El sabor Red Berries cuenta con una demanda regular y establecida en el calibre de 1 litro.",
+        "confianza": "alta"
+      }
+    ],
+    "oportunidades": [
+      {
+        "titulo": "Expansión de Green Apple en 473 ml",
+        "evidencia": "Green Apple en 473 ml casi no registra volumen en la mayor parte del período analizado, a diferencia de su desempeño en 1 L.",
+        "fuente": "logyt",
+        "periodo": "202509 - 202608",
+        "interpretacion": "Existe potencial de crecimiento si se logra traccionan la distribución y venta de Green Apple en el calibre de 473 ml.",
+        "confianza": "media"
+      }
+    ],
+    "debilidades": [
+      {
+        "titulo": "Disparidad de portfolio entre calibres",
+        "evidencia": "Mientras el calibre de 1 L opera con los cuatro sabores de forma regular hacia 2026, el calibre de 473 ml muestra ausencia prolongada de Green Apple y Red Berries.",
+        "fuente": "logyt",
+        "periodo": "202509 - 202608",
+        "interpretacion": "La estrategia de portfolio completo no se encuentra uniformemente desplegada en ambos calibres en el canal supermercadista.",
+        "confianza": "alta"
+      }
+    ],
+    "amenazas": []
+  },
+  "contradicciones_entre_fuentes": [],
+  "revision_humana": {
+    "requiere_revision_humana": true,
+    "puntos_a_revisar": [
+      "Verificar la disponibilidad de datos de Sell-in, Sell-out de distribuidores y Scentia para contrastar los índices de Logyt con la realidad de volumen absoluto y rotación por clientes.",
+      "Validar si la ausencia de Green Apple y Red Berries en 473 ml en Logyt responde a problemas de codificación/distribución o a una decisión comercial deliberada."
+    ],
+    "responsable_final": "Brand Manager"
+  }
+}
