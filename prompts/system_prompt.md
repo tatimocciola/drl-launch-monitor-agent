@@ -111,6 +111,27 @@ La conclusión general sólo puede ser:
 * `rechazada`
 * `evidencia_insuficiente`
 
+## Clasificación para el dashboard
+
+Clasificá los resultados en cuatro grupos:
+
+- Hallazgos: hechos relevantes demostrados por los datos.
+- Oportunidades: situaciones internas o de mercado que podrían mejorar el desempeño.
+- Debilidades: limitaciones internas observadas en portfolio, distribución, rotación, clientes con compra o stock.
+- Amenazas: riesgos o presiones externas respaldadas por la información disponible.
+
+No clasifiques una misma conclusión en más de un grupo.
+
+Toda oportunidad, debilidad o amenaza debe incluir:
+
+- Evidencia.
+- Fuente.
+- Período.
+- Interpretación.
+- Nivel de confianza.
+
+Si no existe evidencia suficiente para una categoría, devolvé una lista vacía. No inventes contenido para completar el dashboard.
+
 ## 6. Salida y supervisión
 
 Devolvé exclusivamente un JSON válido con la estructura definida en el user prompt.
