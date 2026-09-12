@@ -17,6 +17,9 @@ El agente recibe un archivo CSV normalizado. Cada fila representa una combinaci�
 | `volumen_cc`          | Sí          | Volumen en cajas convertidas de 9 litros        | `8433`        |
 | `clientes_con_compra` | No          | Cantidad de clientes que compraron el producto  | `120`         |
 | `stock_cc`            | No          | Stock agregado en cajas convertidas de 9 litros | `950`         |
+| `volumen_fytd_cc` | No | Volumen acumulado del año fiscal en Scentia | `12500` |
+| `wd_pct` | No | Distribución ponderada informada por Scentia | `45.2` |
+| `nd_pct` | No | Distribución numérica informada por Scentia | `32.8` |
 
 ## Valores admitidos
 
@@ -25,6 +28,7 @@ El agente recibe un archivo CSV normalizado. Cada fila representa una combinaci�
 * `LM`: último mes.
 * `FYTD`: acumulado del año fiscal.
 * `L12M`: últimos doce meses.
+* `scentia`
 
 No deben compararse registros con temporalidades diferentes.
 
@@ -61,8 +65,16 @@ Para sell-in y Logyt se utilizará `TOTAL` cuando no exista apertura geográfica
 * `clientes_con_compra` sólo se completa para sell-in y sell-out de distribuidores.
 * `stock_cc` sólo se completa para Logyt.
 * No se deben estimar datos faltantes para completar la tabla.
+* `volumen_fytd_cc`, `wd_pct` y `nd_pct` sólo se completan para Scentia.
+* La ausencia de un sabor o calibre en Scentia debe registrarse como “sin dato disponible”, no como venta cero.
 
 ## Indicadores derivados
+
+### Distribución Scentia
+
+`wd_pct` representa distribución ponderada y `nd_pct` representa distribución numérica.
+
+Estas métricas se utilizan tal como las informa la fuente. No deben calcularse ni completarse cuando no están disponibles.
 
 ### Rotación proxy
 
