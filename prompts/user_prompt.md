@@ -84,7 +84,50 @@ Utilizá exactamente esta estructura:
       "confianza": "alta|media|baja"
     }
   ],
-  "contradicciones_entre_fuentes": [],
+  ],
+  "dashboard": {
+    "hallazgos": [
+      {
+        "titulo": "",
+        "evidencia": "",
+        "fuente": "",
+        "periodo": "",
+        "interpretacion": "",
+        "confianza": "alta|media|baja"
+      }
+    ],
+    "oportunidades": [
+      {
+        "titulo": "",
+        "evidencia": "",
+        "fuente": "",
+        "periodo": "",
+        "interpretacion": "",
+        "confianza": "alta|media|baja"
+      }
+    ],
+    "debilidades": [
+      {
+        "titulo": "",
+        "evidencia": "",
+        "fuente": "",
+        "periodo": "",
+        "interpretacion": "",
+        "confianza": "alta|media|baja"
+      }
+    ],
+    "amenazas": [
+      {
+        "titulo": "",
+        "evidencia": "",
+        "fuente": "",
+        "periodo": "",
+        "interpretacion": "",
+        "confianza": "alta|media|baja"
+      }
+    ]
+  },
+ "contradicciones_entre_fuentes": [],
   "revision_humana": {
     "requiere_revision_humana": true,
     "puntos_a_revisar": [],
@@ -96,6 +139,8 @@ Utilizá exactamente esta estructura:
 ## Límites
 
 * Incluí como máximo cinco hallazgos priorizados.
+* Incluí como máximo tres elementos en cada categoría del dashboard.
+* Devolvé una lista vacía cuando una categoría no tenga evidencia suficiente.
 * No completes con cero los datos ausentes.
 * No calcules indicadores que no tengan denominador válido.
 * No afirmes disponibilidad por punto de venta a partir del stock agregado.
