@@ -40,7 +40,12 @@ with st.sidebar:
     archivo = st.file_uploader("Archivo CSV normalizado", type=["csv"])
     corrida_id = st.text_input("ID de corrida", value="corrida_01")
     modelo = st.text_input("Modelo", value="gemini-3.5-flash-lite")
-    clave = st.text_input("Gemini API key", value=os.getenv("GEMINI_API_KEY", ""), type="password")
+    clave_configurada = os.getenv("GEMINI_API_KEY", "")
+    if clave_configurada:
+        clave = clave_configurada
+        st.success("API de Gemini configurada")
+    else:
+        clave = st.text_input("Gemini API key", type="password")
     ejecutar = st.button("Ejecutar análisis", type="primary", use_container_width=True)
 
 if ejecutar:
