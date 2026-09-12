@@ -8,7 +8,8 @@ import pandas as pd
 MAX_ARCHIVOS = 10
 MAX_DESCOMPRIMIDO = 500 * 1024 * 1024
 COLUMNAS = [
-    "PERIODO", "TOTALBRAND", "Brand", "Calibre", "Volumen", "Ytd_Vol"
+    "PERIODO", "TOTALBRAND", "Brand", "Calibre", "Volumen", "Ytd_Vol",
+    "BANDERA", "AREA", "WD", "ND",
 ]
 MAPA_SABORES = {
     "DR LEMON VODKA": "VODKA",
@@ -70,11 +71,18 @@ def normalizar_scentia_zip(datos_zip: bytes) -> pd.DataFrame:
                 registros.append([periodo_txt, "LM", "scentia", "TOTAL", int(calibre), "TOTAL_DRL", volumen_total, None, None, ytd_total, None, None])
 
             core = grupo[grupo["Brand"].isin(MAPA_SABORES)].copy()
-            for brand, datos_sabor in core.groupby("Brand"):
+            for (brand, area), datos_sabor in core.groupby(["Brand", "AREA"], dropna=False):
                 volumen = datos_sabor["Volumen"].sum(min_count=1)
                 ytd = datos_sabor["Ytd_Vol"].sum(min_count=1)
+                # ND y WD son porcentajes definidos por celda Scentia. Para evitar
+                # inventar una distribución nacional, se conservan al nivel de área.
+                nd = datos_sabor["ND"].sum(min_count=1)
+                wd = datos_sabor["WD"].sum(min_count=1)
                 if pd.notna(volumen):
-                    registros.append([periodo_txt, "LM", "scentia", "TOTAL", int(calibre), MAPA_SABORES[brand], volumen, None, None, ytd, None, None])
+                    registros.append([
+                        periodo_txt, "LM", "scentia", str(area), int(calibre),
+                        MAPA_SABORES[brand], volumen, None, None, ytd, wd, nd,
+                    ])
 
     if not registros:
         raise ValueError("No se encontraron registros DR LEMON de 473 ml o 1 L.")

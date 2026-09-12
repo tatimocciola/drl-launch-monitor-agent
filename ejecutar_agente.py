@@ -207,9 +207,21 @@ def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, list[str]]:
         raise ValueError(" ".join(errores))
 
     df["rotacion_proxy"] = None
-    mascara_rotacion = df["clientes_con_compra"].notna() & (df["clientes_con_compra"] > 0)
-    df.loc[mascara_rotacion, "rotacion_proxy"] = (
-        df.loc[mascara_rotacion, "volumen_cc"] / df.loc[mascara_rotacion, "clientes_con_compra"]
+    mascara_clientes = (
+        df["fuente"].isin(["sell_in", "sell_out_distribuidores"])
+        & df["clientes_con_compra"].notna()
+        & (df["clientes_con_compra"] > 0)
+    )
+    df.loc[mascara_clientes, "rotacion_proxy"] = (
+        df.loc[mascara_clientes, "volumen_cc"] / df.loc[mascara_clientes, "clientes_con_compra"]
+    ).round(3)
+    mascara_scentia = (
+        (df["fuente"] == "scentia")
+        & df["nd_pct"].notna()
+        & (df["nd_pct"] > 0)
+    )
+    df.loc[mascara_scentia, "rotacion_proxy"] = (
+        df.loc[mascara_scentia, "volumen_cc"] / df.loc[mascara_scentia, "nd_pct"]
     ).round(3)
 
     df["relacion_stock_sellout"] = None

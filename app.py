@@ -12,6 +12,17 @@ from preparar_scentia import normalizar_scentia_zip
 
 st.set_page_config(page_title="DRL Core Portfolio Agent", page_icon="📊", layout="wide")
 
+st.markdown(
+    """
+    <style>
+    div[data-testid="stMarkdownContainer"] div.drl-card,
+    div[data-testid="stMarkdownContainer"] div.drl-card * { color: #111827 !important; }
+    div.drl-card small { color: #4B5563 !important; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 def mostrar_tarjetas(elementos, color):
     if not elementos:
@@ -20,8 +31,8 @@ def mostrar_tarjetas(elementos, color):
     for item in elementos:
         st.markdown(
             f"""
-            <div style="border-left: 5px solid {color}; padding: 12px 16px; margin: 10px 0;
-                        background: #ffffff; border-radius: 6px; box-shadow: 0 1px 4px #00000018;">
+            <div class="drl-card" style="border-left: 5px solid {color}; padding: 12px 16px; margin: 10px 0;
+                        background: #ffffff; color: #111827; border-radius: 6px; box-shadow: 0 1px 4px #00000018;">
               <strong>{item.get('titulo', 'Sin título')}</strong><br>
               <small>{item.get('fuente', '')} · {item.get('periodo', '')}</small><br>
               <b>Evidencia:</b> {item.get('evidencia', '')}<br>
@@ -38,7 +49,11 @@ st.caption("Evaluación supervisada del rol de Vodka, Limón, Green Apple y Red 
 
 with st.sidebar:
     st.header("Nueva corrida")
-    archivo = st.file_uploader("CSV normalizado o ZIP Scentia", type=["csv", "zip"])
+    archivos = st.file_uploader(
+        "Fuentes para analizar (CSV normalizados o ZIP Scentia)",
+        type=["csv", "zip"],
+        accept_multiple_files=True,
+    )
     corrida_id = st.text_input("ID de corrida", value="corrida_01")
     modelo = st.text_input("Modelo", value="gemini-3.5-flash-lite")
     clave_configurada = os.getenv("GEMINI_API_KEY", "")
@@ -50,23 +65,33 @@ with st.sidebar:
     ejecutar = st.button("Ejecutar análisis", type="primary", use_container_width=True)
 
 if ejecutar:
-    if archivo is None:
-        st.error("Seleccioná un archivo CSV normalizado o un ZIP de Scentia.")
+    if not archivos:
+        st.error("Seleccioná al menos un CSV normalizado o un ZIP de Scentia.")
         st.stop()
     if not clave:
         st.error("Ingresá la Gemini API key. La aplicación no la guarda.")
         st.stop()
 
     try:
-        if archivo.name.lower().endswith(".zip"):
-            entrada = normalizar_scentia_zip(archivo.getvalue())
-            st.caption(
-                f"Scentia procesado: {len(entrada)} registros agregados e indexados. "
-                "La base original no se envía al modelo."
-            )
-        else:
-            entrada = archivo
-        df, _ = validar_y_preparar(entrada)
+        entradas = []
+        nombres = []
+        for archivo in archivos:
+            try:
+                if archivo.name.lower().endswith(".zip"):
+                    entrada = normalizar_scentia_zip(archivo.getvalue())
+                else:
+                    entrada = archivo
+                df_archivo, _ = validar_y_preparar(entrada)
+                entradas.append(df_archivo)
+                nombres.append(archivo.name)
+            except Exception as error_archivo:
+                raise ValueError(f"Error en {archivo.name}: {error_archivo}") from error_archivo
+        import pandas as pd
+        df = pd.concat(entradas, ignore_index=True)
+        st.caption(
+            f"{len(archivos)} archivo(s) procesado(s); {len(df)} registros normalizados. "
+            "Las bases originales no se envían al modelo."
+        )
         raiz = __import__("pathlib").Path(__file__).resolve().parent
         system_prompt = leer_prompt(raiz / "prompts" / "system_prompt.md")
         user_template = leer_prompt(raiz / "prompts" / "user_prompt.md")
@@ -76,7 +101,7 @@ if ejecutar:
             user_template
             .replace("{corrida_id}", corrida_id)
             .replace("{fecha_ejecucion}", fecha)
-            .replace("{nombre_archivo}", archivo.name)
+            .replace("{nombre_archivo}", ", ".join(nombres))
             .replace("{datos_json}", json.dumps(datos, ensure_ascii=False, indent=2))
         )
         with st.spinner("Analizando la evidencia..."):
@@ -98,7 +123,7 @@ if ejecutar:
 
 resultado = st.session_state.get("resultado")
 if not resultado:
-    st.info("Cargá un CSV y ejecutá el análisis para ver el dashboard.")
+    st.info("Cargá una o más fuentes y ejecutá el análisis para ver el dashboard.")
     st.stop()
 
 hipotesis = resultado["resultado_hipotesis"]
