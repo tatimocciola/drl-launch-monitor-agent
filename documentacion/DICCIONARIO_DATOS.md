@@ -20,6 +20,9 @@ El agente recibe un archivo CSV normalizado. Cada fila representa una combinaci�
 | `volumen_fytd_cc` | No | Volumen acumulado del año fiscal en Scentia | `12500` |
 | `wd_pct` | No | Distribución ponderada informada por Scentia | `45.2` |
 | `nd_pct` | No | Distribución numérica informada por Scentia | `32.8` |
+| `datos_anonimizados` | Sí | Indica si las magnitudes fueron transformadas para proteger información confidencial | `true` |
+| `unidad_volumen` | Sí | Unidad de las columnas de volumen y stock | `CC` o `INDICE` |
+| `base_indice` | No | Explicación de la base utilizada para construir el índice | `Total DRL enero 2026 = 100` |
 
 ## Valores admitidos
 
@@ -67,6 +70,9 @@ Para sell-in y Logyt se utilizará `TOTAL` cuando no exista apertura geográfica
 * No se deben estimar datos faltantes para completar la tabla.
 * `volumen_fytd_cc`, `wd_pct` y `nd_pct` sólo se completan para Scentia.
 * La ausencia de un sabor o calibre en Scentia debe registrarse como “sin dato disponible”, no como venta cero.
+* Cuando `datos_anonimizados` sea `true`, las columnas de volumen y stock contienen índices, aunque sus nombres conserven la referencia a la métrica original.
+* El agente debe citar esos valores como índices y nunca presentarlos como cajas convertidas reales.
+* Todos los sabores de una misma fuente y calibre deben utilizar la misma base para conservar participaciones y tendencias.
 
 ## Indicadores derivados
 
