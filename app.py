@@ -129,7 +129,7 @@ if not resultado:
 hipotesis = resultado["resultado_hipotesis"]
 c1, c2, c3 = st.columns(3)
 c1.metric("Resultado de la hipótesis", hipotesis["estado"].replace("_", " ").title())
-c2.metric("Confianza", hipotesis["nivel_confianza"].title())
+c2.metric("Confianza en la conclusión", hipotesis["nivel_confianza"].title())
 c3.metric("Calidad de datos", resultado["calidad_datos"]["estado"].title())
 st.write(hipotesis["justificacion"])
 
