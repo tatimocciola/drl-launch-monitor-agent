@@ -24,6 +24,63 @@ st.markdown(
 )
 
 
+def detectar_infracciones(resultado, df):
+    infracciones = []
+    fuentes = set(df["fuente"].dropna().astype(str))
+    periodos = df["periodo"].dropna().astype(str).tolist()
+    solo_un_anio = periodos and len({p[:4] for p in periodos}) == 1
+
+    textos_temporales = []
+    for bloque in resultado.get("desempeno_por_calibre", []):
+        textos_temporales.append(bloque.get("interpretacion", ""))
+    for bloque in resultado.get("hallazgos_priorizados", []):
+        textos_temporales.extend([bloque.get("evidencia", ""), bloque.get("interpretacion", "")])
+    for categoria in resultado.get("dashboard", {}).values():
+        for bloque in categoria:
+            textos_temporales.extend([
+                bloque.get("titulo", ""), bloque.get("evidencia", ""),
+                bloque.get("interpretacion", ""),
+            ])
+    texto_temporal = " ".join(textos_temporales).lower()
+    terminos_tendencia = ["caída", "caida", "contracción", "contraccion", "disminución", "disminucion", "decrece", "decreciente"]
+    if fuentes == {"scentia"} and solo_un_anio and any(t in texto_temporal for t in terminos_tendencia):
+        infracciones.append(
+            "No califiques el movimiento enero-julio como caída, contracción, disminución o tendencia: no hay comparación interanual ni desestacionalizada."
+        )
+
+    problemas = " ".join(resultado.get("calidad_datos", {}).get("problemas_detectados", [])).lower()
+    if "anonimiz" in problemas:
+        infracciones.append(
+            "No clasifiques la anonimización mediante índices como problema de calidad; informala únicamente como limitación para magnitudes absolutas."
+        )
+
+    dashboard_riesgos = json.dumps(
+        {k: resultado.get("dashboard", {}).get(k, []) for k in ["oportunidades", "debilidades", "amenazas"]},
+        ensure_ascii=False,
+    ).lower()
+    if "473" in dashboard_riesgos and ("green apple" in dashboard_riesgos or "red berries" in dashboard_riesgos):
+        infracciones.append(
+            "No clasifiques la falta conocida de Green Apple o Red Berries 473 ml en Scentia como oportunidad, debilidad o amenaza."
+        )
+
+    responsables = {"marketing", "comercial", "trade marketing", "supply"}
+    if any(
+        h.get("accion_sugerida", "").strip().lower() in responsables
+        for h in resultado.get("hallazgos_priorizados", [])
+    ):
+        infracciones.append("Cada acción sugerida debe comenzar con un verbo y ser distinta del nombre del responsable.")
+
+    if fuentes == {"scentia"} and df["rotacion_proxy"].notna().any():
+        evidencia_rotacion = " ".join(
+            " ".join(r.get("evidencia", [])) for r in resultado.get("rol_por_sabor", [])
+        ).lower()
+        if "rotaci" not in evidencia_rotacion:
+            infracciones.append(
+                "Incluí evidencia cuantitativa de la evolución del índice de rotación Scentia (volumen/ND) para combinaciones comparables."
+            )
+    return infracciones
+
+
 def mostrar_tarjetas(elementos, color):
     if not elementos:
         st.info("No se identificaron elementos con evidencia suficiente.")
@@ -104,7 +161,7 @@ if ejecutar:
             .replace("{nombre_archivo}", ", ".join(nombres))
             .replace("{datos_json}", json.dumps(datos, ensure_ascii=False, indent=2))
         )
-        with st.spinner("Analizando la evidencia..."):
+        with st.spinner("Analizando y validando la evidencia..."):
             client = genai.Client(api_key=clave)
             response = client.models.generate_content(
                 model=modelo,
@@ -116,8 +173,32 @@ if ejecutar:
                     temperature=0.1,
                 ),
             )
-        st.session_state["resultado"] = json.loads(response.text)
-        st.session_state["tokens"] = getattr(response, "usage_metadata", None)
+            resultado_generado = json.loads(response.text)
+            infracciones = detectar_infracciones(resultado_generado, df)
+            responses = [response]
+            if infracciones:
+                correccion = (
+                    prompt
+                    + "\n\nLa primera respuesta incumplió estos controles automáticos:\n- "
+                    + "\n- ".join(infracciones)
+                    + "\nCorregí todas las infracciones y devolvé nuevamente el JSON completo."
+                )
+                response_corregida = client.models.generate_content(
+                    model=modelo,
+                    contents=correccion,
+                    config=types.GenerateContentConfig(
+                        system_instruction=system_prompt,
+                        response_mime_type="application/json",
+                        response_json_schema=RESPONSE_SCHEMA,
+                        temperature=0.0,
+                    ),
+                )
+                resultado_generado = json.loads(response_corregida.text)
+                responses.append(response_corregida)
+                infracciones = detectar_infracciones(resultado_generado, df)
+            st.session_state["controles_salida"] = infracciones
+        st.session_state["resultado"] = resultado_generado
+        st.session_state["tokens"] = [getattr(r, "usage_metadata", None) for r in responses]
     except Exception as error:
         st.error(f"No se pudo completar la corrida: {error}")
 
@@ -132,6 +213,10 @@ c1.metric("Resultado de la hipótesis", hipotesis["estado"].replace("_", " ").ti
 c2.metric("Confianza en la conclusión", hipotesis["nivel_confianza"].title())
 c3.metric("Calidad de datos", resultado["calidad_datos"]["estado"].title())
 st.write(hipotesis["justificacion"])
+
+controles_salida = st.session_state.get("controles_salida", [])
+if controles_salida:
+    st.warning("La revisión automática dejó puntos pendientes para supervisión humana: " + " ".join(controles_salida))
 
 tab1, tab2, tab3, tab4 = st.tabs(["Hallazgos", "Oportunidades", "Debilidades", "Amenazas"])
 with tab1:
