@@ -1,0 +1,174 @@
+{
+  "corrida": {
+    "id": "corrida_04_multifuente",
+    "fecha_ejecucion": "2026-09-13T23:52:55.494373+00:00",
+    "archivo": "corrida_03_logyt_datos_reales.csv, Base Datos Scentia Ene-Jul-2026.zip",
+    "fuentes_analizadas": [
+      "logyt",
+      "scentia"
+    ],
+    "periodos_analizados": [
+      "202509",
+      "202510",
+      "202511",
+      "202512",
+      "202601",
+      "202602",
+      "202603",
+      "202604",
+      "202605",
+      "202606",
+      "202607",
+      "202608"
+    ],
+    "temporalidades": [
+      "LM"
+    ]
+  },
+  "calidad_datos": {
+    "estado": "parcial",
+    "problemas_detectados": [
+      "Incompatibilidad de unidades entre Logyt (cajas convertidas de 9 litros reales) y Scentia (datos anonimizados indexados a enero de 2026)."
+    ],
+    "datos_faltantes_relevantes": [
+      "Datos de sell-in y sell-out de distribuidores para todas las áreas geográficas fuera de Logyt y Scentia.",
+      "Registros históricos comparables previos a la incorporación completa de los calibres para validar aceleración."
+    ]
+  },
+  "resultado_hipotesis": {
+    "estado": "evidencia_insuficiente",
+    "justificacion": "Aunque se observa presencia de nuevos sabores en 1 L y Logyt muestra volúmenes estables, no existe una base histórica homogénea comparable que demuestre una aceleración directa de la rotación general atribuible únicamente a completar el portfolio en ambos calibres, sumado a la falta de cobertura de Green Apple y Red Berries 473 ml en Scentia.",
+    "nivel_confianza": "medio"
+  },
+  "desempeno_por_calibre": [
+    {
+      "calibre": "473 ml",
+      "evidencia": [
+        "Volumen total en Logyt (fuente logyt, período 202509, temporalidad LM): 6082.87 CC.",
+        "Volumen total en Logyt (fuente logyt, período 202512, temporalidad LM): 11570.91 CC."
+      ],
+      "interpretacion": "El calibre 473 ml concentra el mayor volumen de la marca en el canal analizado (Logyt), mostrando picos estacionales fuertes hacia diciembre.",
+      "limitaciones": [
+        "Ausencia de cobertura para los sabores Green Apple y Red Berries 473 ml en la fuente Scentia.",
+        "No se dispone de clientes con compra ni sell-in directo para este calibre en Logyt."
+      ]
+    },
+    {
+      "calibre": "1 L",
+      "evidencia": [
+        "Volumen total en Logyt (fuente logyt, período 202509, temporalidad LM): 2935.64 CC.",
+        "Volumen total en Logyt (fuente logyt, período 202512, temporalidad LM): 5452.48 CC."
+      ],
+      "interpretacion": "El calibre de 1 L incorpora efectivamente los cuatro sabores (incluyendo Green Apple y Red Berries), mostrando estacionalidad alineada con el período estival de diciembre.",
+      "limitaciones": [
+        "Las fuentes de Scentia están anonimizadas como índices, impidiendo la lectura en magnitudes absolutas de cajas convertidas.",
+        "Falta de comparabilidad interanual con el mismo período del año anterior."
+      ]
+    }
+  ],
+  "rol_por_sabor": [
+    {
+      "sabor": "Limón",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Mix de sabor en Logyt (fuente logyt, período 202509, temporalidad LM): 37.2% del volumen del calibre.",
+        "Mix de sabor en Logyt (fuente logyt, período 202512, temporalidad LM): 41.25% del volumen del calibre."
+      ],
+      "interpretacion": "Mantiene el rol de liderazgo absoluto en volumen dentro del calibre de 473 ml en el canal de cadenas de supermercados.",
+      "dato_faltante": "Datos de clientes con compra específicos para evaluar su rotación proxy."
+    },
+    {
+      "sabor": "Vodka",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Mix de sabor en Logyt (fuente logyt, período 202509, temporalidad LM): 21.92% del volumen del calibre.",
+        "Mix de sabor en Logyt (fuente logyt, período 202512, temporalidad LM): 20.15% del volumen del calibre."
+      ],
+      "interpretacion": "Opera como el segundo pilar de volumen en el calibre 473 ml, con una participación muy estable a lo largo del tiempo.",
+      "dato_faltante": "Registros de distribución numérica (ND) limpios de estacionalidad."
+    },
+    {
+      "sabor": "Green Apple",
+      "calibre": "1 L",
+      "evidencia": [
+        "Volumen en Logyt (fuente logyt, período 202512, temporalidad LM): 8.83 CC (mix 0.16%).",
+        "Volumen en Logyt (fuente logyt, período 202602, temporalidad LM): 133.22 CC (mix 4.24%)."
+      ],
+      "interpretacion": "Registra una participación inicial baja en su lanzamiento en 1 L, incrementando paulatinamente su aporte hacia los meses de verano.",
+      "dato_faltante": "Base histórica previa a su introducción en el calibre."
+    },
+    {
+      "sabor": "Red Berries",
+      "calibre": "1 L",
+      "evidencia": [
+        "Volumen en Logyt (fuente logyt, período 202509, temporalidad LM): 150.66 CC (mix 5.13%).",
+        "Volumen en Logyt (fuente logyt, temporalidad LM): Se mantiene con una participación estable en torno al 5% a lo largo de los períodos."
+      ],
+      "interpretacion": "Aporta volumen de manera consistente sin superar la participación de los sabores core históricos (Vodka y Limón).",
+      "dato_faltante": "Apertura de clientes con compra por sabor."
+    }
+  ],
+  "hallazgos_priorizados": [
+    {
+      "prioridad": 1,
+      "nivel": "calibre",
+      "fuente": "logyt",
+      "periodo": "202512",
+      "temporalidad": "LM",
+      "evidencia": "El volumen total del calibre 473 ml alcanzó 11570.91 CC y el de 1 L llegó a 5452.48 CC en diciembre de 2025.",
+      "interpretacion": "Existe una marcada estacionalidad estival que multiplica las ventas totales en diciembre en comparación con el resto del año.",
+      "accion_sugerida": "Planificar con Supply el abastecimiento logístico para los picos de demanda estival.",
+      "responsable_sugerido": "Supply",
+      "kpi_seguimiento": "Nivel de servicio y stock en cadenas",
+      "confianza": "alta"
+    },
+    {
+      "prioridad": 2,
+      "nivel": "sabor",
+      "fuente": "logyt",
+      "periodo": "202602",
+      "temporalidad": "LM",
+      "evidencia": "Green Apple en 1 L alcanzó 133.22 CC (mix de 4.24%) en febrero de 2026.",
+      "interpretacion": "El sabor Green Apple muestra tracción positiva tras su inserción en el calibre de un litro.",
+      "accion_sugerida": "Evaluar acciones de visibilidad en góndola para potenciar el trial de Green Apple.",
+      "responsable_sugerido": "Trade Marketing",
+      "kpi_seguimiento": "Mix de sabor en volumen",
+      "confianza": "media"
+    }
+  ],
+  "dashboard": {
+    "hallazgos": [
+      {
+        "titulo": "Concentración estival en canales modernos",
+        "evidencia": "Logyt muestra un pico de 11570.91 CC en 473 ml y 5452.48 CC en 1 L durante diciembre de 2025.",
+        "fuente": "logyt",
+        "periodo": "202512",
+        "interpretacion": "Las ventas de la marca dependen en gran medida de la estacionalidad de cierre de año.",
+        "confianza": "alta"
+      }
+    ],
+    "oportunidades": [
+      {
+        "titulo": "Expansión de Green Apple en 1 L",
+        "evidencia": "Green Apple en 1 L registra aumentos de volumen de 8.83 CC en dic-2025 a 133.22 CC en feb-2026.",
+        "fuente": "logyt",
+        "periodo": "202602",
+        "interpretacion": "Existe espacio para traccionar mayor volumen mediante promociones cruzadas.",
+        "confianza": "media"
+      }
+    ],
+    "debilidades": [],
+    "amenazas": []
+  },
+  "contradicciones_entre_fuentes": [
+    "Logyt reporta volúmenes absolutos reales en cajas convertidas, mientras que Scentia trabaja con índices base 100 sin permitir un cruce directo de magnitudes físicas."
+  ],
+  "revision_humana": {
+    "requiere_revision_humana": true,
+    "puntos_a_revisar": [
+      "Validar el impacto real de la falta de datos de Green Apple y Red Berries en 473 ml antes de tomar decisiones de expansión.",
+      "Corroborar la estacionalidad de los índices de Scentia frente a los volúmenes reales de Logyt."
+    ],
+    "responsable_final": "Brand Manager"
+  }
+}
