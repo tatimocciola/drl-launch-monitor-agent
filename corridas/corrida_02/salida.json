@@ -1,0 +1,139 @@
+{
+  "corrida": {
+    "id": "corrida_02",
+    "fecha_ejecucion": "2026-09-12T04:29:58.889155+00:00",
+    "archivo": "Base Datos Scentia Ene-Jul-2026.zip",
+    "fuentes_analizadas": [
+      "scentia"
+    ],
+    "periodos_analizados": [
+      "202601",
+      "202602",
+      "202603",
+      "202604",
+      "202605",
+      "202606",
+      "202607"
+    ],
+    "temporalidades": [
+      "LM"
+    ]
+  },
+  "calidad_datos": {
+    "estado": "parcial",
+    "problemas_detectados": [
+      "Ausencia de Green Apple y Red Berries en calibre 473 ml dentro de la fuente Scentia."
+    ],
+    "datos_faltantes_relevantes": [
+      "Sell-in",
+      "Sell-out de distribuidores",
+      "Logyt - sell-out y stock de cadenas de supermercados",
+      "Green Apple y Red Berries en calibre 473 ml"
+    ]
+  },
+  "resultado_hipotesis": {
+    "estado": "evidencia_insuficiente",
+    "justificacion": "El análisis se basa exclusivamente en la fuente Scentia anonimizada entre enero y julio de 2026, la cual carece de información para Green Apple y Red Berries en calibre 473 ml y no cuenta con datos de otras etapas de la cadena comercial (sell-in, distribuidores o cadenas) para validar la aceleración general de la rotación por completar el portfolio en ambos calibres.",
+    "nivel_confianza": "alto"
+  },
+  "desempeno_por_calibre": [
+    {
+      "calibre": "473 ml",
+      "evidencia": [
+        "Volumen total indexado de DR LEMON 473 ml pasó de 100.0 en el período 202601 a 62.509 en el período 202607 según Scentia."
+      ],
+      "interpretacion": "Se observa el movimiento del volumen indexado total para el calibre 473 ml entre enero y julio de 2026, un comportamiento que puede contener efectos estacionales ya que no se dispone de una comparación interanual.",
+      "limitaciones": [
+        "Datos anonimizados expresados como índice base Total DRL 473 ml 202601 = 100, permitiendo analizar evolución y mix pero no magnitudes absolutas.",
+        "Cobertura limitada a Limón y Vodka, sin datos para Green Apple y Red Berries en 473 ml."
+      ]
+    },
+    {
+      "calibre": "1 L",
+      "evidencia": [
+        "Volumen total indexado de DR LEMON 1 L pasó de 100.0 en el período 202601 a 72.078 en el período 202607 según Scentia."
+      ],
+      "interpretacion": "El volumen indexado total para el calibre 1 L muestra un movimiento entre enero y julio de 2026, sujeto a posibles variaciones por estacionalidad al carecer de serie desestacionalizada o base equivalente.",
+      "limitaciones": [
+        "Datos anonimizados expresados como índice base Total DRL 1000 ml 202601 = 100, sin reportar magnitudes absolutas de cajas convertidas."
+      ]
+    }
+  ],
+  "rol_por_sabor": [
+    {
+      "sabor": "Limón",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Registra volumen indexado en Scentia de 100.0 (totalizador de calibre en 202601) y 62.509 en el totalizador de 202607, con un índice de rotación Scentia variable según área geográfica."
+      ],
+      "interpretacion": "Actúa como el sabor principal y base del calibre 473 ml, reflejando la tendencia general del segmento analizado.",
+      "dato_faltante": "Magnitudes absolutas en cajas convertidas."
+    },
+    {
+      "sabor": "Vodka",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Presente en la base Scentia con registros bimestrales de volumen indexado y distribución en el calibre 473 ml entre enero y julio de 2026."
+      ],
+      "interpretacion": "Comprende el segundo pilar core registrado para el calibre 473 ml en el panel de consumidor final de Scentia.",
+      "dato_faltante": "Magnitudes absolutas y datos de canibalización con sabores nuevos."
+    },
+    {
+      "sabor": "Green Apple",
+      "calibre": "1 L",
+      "evidencia": [
+        "Registra volumen indexado, WD, ND e índice de rotación Scentia en el calibre 1 L entre 202601 y 202607."
+      ],
+      "interpretacion": "Aporta volumen complementario dentro del calibre 1 L en el sell-out a consumidor final registrado por Scentia.",
+      "dato_faltante": "Comparación histórica anterior a la incorporación completa del portfolio."
+    },
+    {
+      "sabor": "Red Berries",
+      "calibre": "1 L",
+      "evidencia": [
+        "Registra volumen indexado, WD, ND e índice de rotación Scentia en el calibre 1 L entre 202601 y 202607."
+      ],
+      "interpretacion": "Desempeña un rol de contribución al mix de sabores del calibre 1 L en el consumo final medido por Scentia.",
+      "dato_faltante": "Información correspondiente a su contraparte en calibre 473 ml por limitaciones de cobertura de la fuente."
+    }
+  ],
+  "hallazgos_priorizados": [
+    {
+      "prioridad": 1,
+      "nivel": "calibre",
+      "fuente": "scentia",
+      "periodo": "202601 - 202607",
+      "temporalidad": "LM",
+      "evidencia": "El volumen total indexado de DR LEMON 473 ml pasó de 100.0 a 62.509 y el de 1 L de 100.0 a 72.078 entre enero y julio de 2026.",
+      "interpretacion": "Se registra el movimiento de los índices de volumen en ambos calibres durante el período analizado, aunque el cambio puede contener estacionalidad.",
+      "accion_sugerida": "Evaluar la estacionalidad de la categoría junto con el equipo comercial para determinar planes de acción.",
+      "responsable_sugerido": "Comercial",
+      "kpi_seguimiento": "Evolución mensual del índice de volumen Scentia",
+      "confianza": "media"
+    }
+  ],
+  "dashboard": {
+    "hallazgos": [
+      {
+        "titulo": "Disponibilidad de datos Scentia",
+        "evidencia": "Fuente Scentia disponible con periodicidad mensual (LM) de enero a julio de 2026 en formato de índice.",
+        "fuente": "scentia",
+        "periodo": "202601 - 202607",
+        "interpretacion": "Permite analizar la evolución del mix y los índices de rotación Scentia mediante datos anonimizados.",
+        "confianza": "alta"
+      }
+    ],
+    "oportunidades": [],
+    "debilidades": [],
+    "amenazas": []
+  },
+  "contradicciones_entre_fuentes": [],
+  "revision_humana": {
+    "requiere_revision_humana": true,
+    "puntos_a_revisar": [
+      "Verificar disponibilidad de fuentes complementarias como sell-in y Logyt para contrastar la hipótesis de rotación general.",
+      "Considerar el impacto estacional en la lectura de los volúmenes indexados entre enero y julio."
+    ],
+    "responsable_final": "Brand Manager"
+  }
+}
