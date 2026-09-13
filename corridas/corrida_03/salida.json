@@ -1,0 +1,219 @@
+{
+  "corrida": {
+    "id": "corrida_03_logyt_real",
+    "fecha_ejecucion": "2026-09-13T23:25:52.525817+00:00",
+    "archivo": "corrida_03_logyt_datos_reales.csv",
+    "fuentes_analizadas": [
+      "logyt"
+    ],
+    "periodos_analizados": [
+      "202509",
+      "202510",
+      "202511",
+      "202512",
+      "202601",
+      "202602",
+      "202603",
+      "202604",
+      "202605",
+      "202606",
+      "202607",
+      "202608"
+    ],
+    "temporalidades": [
+      "LM"
+    ]
+  },
+  "calidad_datos": {
+    "estado": "parcial",
+    "problemas_detectados": [
+      "Ausencia de datos de stock, clientes con compra, volumen FYTD, WD y ND en la fuente Logyt analizada.",
+      "Cobertura limitada de fuentes ya que solo se procesó Logyt para esta corrida."
+    ],
+    "datos_faltantes_relevantes": [
+      "Sell-in",
+      "Sell-out de distribuidores",
+      "Scentia",
+      "Clientes con compra y stock en Logyt"
+    ]
+  },
+  "resultado_hipotesis": {
+    "estado": "evidencia_insuficiente",
+    "justificacion": "La fuente Logyt analizada no provee datos de rotación proxy (clientes con compra o ND) ni permite cruzar con Sell-in, Sell-out de distribuidores o Scentia para evaluar la aceleración general de la rotación tras completar el portfolio.",
+    "nivel_confianza": "bajo"
+  },
+  "desempeno_por_calibre": [
+    {
+      "calibre": "473 ml",
+      "evidencia": [
+        "Volumen total de 6,082.87 CC en 202509 hasta 4,963.17 CC en 202608.",
+        "El calibre 473 ml concentra el mayor volumen de la marca en comparación con el calibre 1 L."
+      ],
+      "interpretacion": "El calibre 473 ml muestra estacionalidad y mantiene el liderazgo en el volumen total comercializado en cadenas de supermercados.",
+      "limitaciones": [
+        "Ausencia de métricas de stock y clientes con compra.",
+        "Falta de comparabilidad interanual completa y datos de otras fuentes."
+      ]
+    },
+    {
+      "calibre": "1 L",
+      "evidencia": [
+        "Volumen total de 2,935.65 CC en 202509 y 2,652.25 CC en 202608.",
+        "Incluye de forma intermitente o tardía sabores nuevos como Green Apple."
+      ],
+      "interpretacion": "El calibre de 1 L representa un volumen menor que el formato 473 ml dentro de las cadenas evaluadas, operando con una participación estable de Limón y Vodka.",
+      "limitaciones": [
+        "Falta de indicadores de rotación y stock por punto de venta.",
+        "Datos limitados a la fuente Logyt."
+      ]
+    }
+  ],
+  "rol_por_sabor": [
+    {
+      "sabor": "Limón",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Volumen de 2,262.93 CC (mix 0.372) en 202509 y 2,148.28 CC (mix 0.4328) en 202608."
+      ],
+      "interpretacion": "Consolida la mayor participación de volumen dentro del calibre 473 ml en cadenas de supermercados.",
+      "dato_faltante": "Rotación proxy y distribución numérica."
+    },
+    {
+      "sabor": "Vodka",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Volumen de 1,333.44 CC (mix 0.2192) en 202509 y 993.26 CC (mix 0.2001) en 202608."
+      ],
+      "interpretacion": "Mantiene el segundo lugar en volumen y participación dentro del calibre 473 ml.",
+      "dato_faltante": "Rotación proxy y distribución numérica."
+    },
+    {
+      "sabor": "Green Apple",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Registra 0.0 CC en julio de 2026 y 109.74 CC (mix 0.0221) en agosto de 2026."
+      ],
+      "interpretacion": "Aparición tardía de volumen en el calibre 473 ml durante 2026 con baja participación inicial.",
+      "dato_faltante": "Serie histórica completa y rotación proxy."
+    },
+    {
+      "sabor": "Red Berries",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Registra 0.0 CC en julio de 2026 y 199.90 CC (mix 0.0403) en agosto de 2026."
+      ],
+      "interpretacion": "Incorporación reciente al calibre 473 ml con volúmenes acotados.",
+      "dato_faltante": "Serie histórica completa y rotación proxy."
+    },
+    {
+      "sabor": "Limón",
+      "calibre": "1 L",
+      "evidencia": [
+        "Volumen de 804.21 CC (mix 0.2739) en 202509 y 768.57 CC (mix 0.2898) en 202608."
+      ],
+      "interpretacion": "Sabor principal en el calibre de 1 L con un aporte constante al volumen del calibre.",
+      "dato_faltante": "Rotación proxy y distribución numérica."
+    },
+    {
+      "sabor": "Vodka",
+      "calibre": "1 L",
+      "evidencia": [
+        "Volumen de 1,150.19 CC (mix 0.3918) en 202509 y 1,028.91 CC (mix 0.3879) en 202608."
+      ],
+      "interpretacion": "Lidera el volumen de ventas en el calibre de 1 L superando a Limón en este formato.",
+      "dato_faltante": "Rotación proxy y distribución numérica."
+    },
+    {
+      "sabor": "Green Apple",
+      "calibre": "1 L",
+      "evidencia": [
+        "Volumen inicial de 8.83 CC en 202512 y 131.35 CC (mix 0.0495) en 202608."
+      ],
+      "interpretacion": "Muestra un crecimiento progresivo desde su introducción en el calibre de 1 L.",
+      "dato_faltante": "Rotación proxy y distribución numérica."
+    },
+    {
+      "sabor": "Red Berries",
+      "calibre": "1 L",
+      "evidencia": [
+        "Volumen de 150.67 CC (mix 0.0513) en 202509 y 164.43 CC (mix 0.062) en 202608."
+      ],
+      "interpretacion": "Aporte estable y menor dentro del mix del calibre 1 L.",
+      "dato_faltante": "Rotación proxy y distribución numérica."
+    }
+  ],
+  "hallazgos_priorizados": [
+    {
+      "prioridad": 1,
+      "nivel": "calibre",
+      "fuente": "logyt",
+      "periodo": "202509 a 202608",
+      "temporalidad": "LM",
+      "evidencia": "El calibre 473 ml concentra consistentemente el mayor volumen de ventas frente al calibre 1 L en la fuente Logyt.",
+      "interpretacion": "El formato 473 ml es el principal motor de volumen de la marca en cadenas de supermercados.",
+      "accion_sugerida": "Optimizar el abastecimiento y la reposición del calibre 473 ml en cadenas.",
+      "responsable_sugerido": "Supply",
+      "kpi_seguimiento": "Volumen mensual en CC de 473 ml",
+      "confianza": "alta"
+    },
+    {
+      "prioridad": 2,
+      "nivel": "sabor",
+      "fuente": "logyt",
+      "periodo": "202509 a 202608",
+      "temporalidad": "LM",
+      "evidencia": "Vodka lidera el volumen en 1 L mientras que Limón lidera en 473 ml.",
+      "interpretacion": "Existe una preferencia de calibre diferenciada según el sabor comercializado.",
+      "accion_sugerida": "Alinear las estrategias promocionales según la preferencia de sabor por calibre.",
+      "responsable_sugerido": "Trade Marketing",
+      "kpi_seguimiento": "Mix de volumen por sabor y calibre",
+      "confianza": "alta"
+    },
+    {
+      "prioridad": 3,
+      "nivel": "sabor",
+      "fuente": "logyt",
+      "periodo": "202512 a 202608",
+      "temporalidad": "LM",
+      "evidencia": "Green Apple en 1 L registra ventas desde 8.83 CC en 202512 hasta 131.35 CC en 202608.",
+      "interpretacion": "El sabor Green Apple demuestra tracción comercial gradual en el calibre de 1 L.",
+      "accion_sugerida": "Monitorear la rotación y el espacio en góndola de Green Apple 1 L.",
+      "responsable_sugerido": "Comercial",
+      "kpi_seguimiento": "Volumen de Green Apple 1 L en CC",
+      "confianza": "media"
+    }
+  ],
+  "dashboard": {
+    "hallazgos": [
+      {
+        "titulo": "Liderazgo de volumen en 473 ml",
+        "evidencia": "El calibre 473 ml representa más del doble del volumen del calibre 1 L en la mayoría de los períodos analizados en Logyt.",
+        "fuente": "logyt",
+        "periodo": "202509-202608",
+        "interpretacion": "El formato 473 ml es clave para el volumen total de DR LEMON en cadenas.",
+        "confianza": "alta"
+      }
+    ],
+    "oportunidades": [],
+    "debilidades": [
+      {
+        "titulo": "Falta de métricas de stock y clientes en Logyt",
+        "evidencia": "Los campos de stock_cc y clientes_con_compra se encuentran vacíos (NaN) en la fuente Logyt.",
+        "fuente": "logyt",
+        "periodo": "202509-202608",
+        "interpretacion": "Imposibilita calcular la rotación proxy y analizar la disponibilidad real por tienda.",
+        "confianza": "alta"
+      }
+    ],
+    "amenazas": []
+  },
+  "contradicciones_entre_fuentes": [],
+  "revision_humana": {
+    "requiere_revision_humana": true,
+    "puntos_a_revisar": [
+      "Verificar la disponibilidad de datos de stock y clientes en futuras cargas de Logyt.",
+      "Incorporar fuentes adicionales (Sell-in, Sell-out de distribuidores y Scentia) para validar la hipótesis de aceleración de rotación general."
+    ],
+    "responsable_final": "Brand Manager"
+  }
+}
