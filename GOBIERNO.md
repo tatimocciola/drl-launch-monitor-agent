@@ -14,6 +14,8 @@ El sistema opera con autonomía L2: analiza archivos, calcula indicadores y prop
 
 ## Contingencia ante ausencia de ambos responsables
 
+Si el responsable suplente —Marketing Manager— no está disponible, no se designa automáticamente un tercer aprobador. Se activa el siguiente protocolo:
+
 1. La corrida se identifica como `pendiente_de_aprobacion`.
 2. Los archivos de entrada, salida, integridad, reproducibilidad y consumo se conservan sin modificaciones.
 3. No se envían recomendaciones a Comercial, Trade Marketing o Supply como instrucciones de ejecución.
@@ -21,6 +23,7 @@ El sistema opera con autonomía L2: analiza archivos, calcula indicadores y prop
 5. La corrida se incorpora a una cola de revisión con fecha, motivo y responsable esperado.
 6. El primer responsable habilitado que regrese documenta en `revision_humana.md`: nombre, rol, fecha, decisión y correcciones.
 7. La falta de respuesta nunca se interpreta como aprobación tácita.
+8. Sólo puede intervenir otro aprobador si la Dirección lo designa previamente y por escrito. Sin esa designación, la decisión permanece bloqueada.
 
 ## Escalamiento excepcional
 
