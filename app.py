@@ -338,6 +338,16 @@ with ZipFile(paquete, "w", ZIP_DEFLATED) as zip_salida:
         json.dumps(reporte_reproducibilidad, ensure_ascii=False, indent=2),
     )
     zip_salida.writestr("log_consumo_api.json", json.dumps(metricas_ejecucion, ensure_ascii=False, indent=2))
+    zip_salida.writestr(
+        "log_consola_api.txt",
+        f"[{resultado['corrida'].get('fecha_ejecucion', '')}] "
+        f"corrida={resultado['corrida'].get('id', '')} modelo={metricas_ejecucion.get('modelo', '')} "
+        f"prompt_tokens={metricas_ejecucion.get('tokens_entrada', 0)} "
+        f"output_tokens={metricas_ejecucion.get('tokens_salida', 0)} "
+        f"total_tokens={metricas_ejecucion.get('tokens_totales', 0)} "
+        f"costo_estimado_usd={metricas_ejecucion.get('costo_estimado_usd', 0):.6f} "
+        "fuente=Gemini_usage_metadata\n",
+    )
     zip_salida.writestr("reporte_ejecucion.md", reporte_final)
 
 st.download_button(
