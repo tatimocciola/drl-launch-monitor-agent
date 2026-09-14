@@ -1,7 +1,9 @@
 import argparse
+import hashlib
 import json
 import os
 import re
+import platform
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -230,6 +232,41 @@ def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, dict]:
         advertencias.append("Hay filas Scentia sin ND; no se calculará rotación para esas observaciones.")
     if (df["fuente"].eq("logyt") & df["stock_cc"].isna()).any():
         advertencias.append("Hay filas Logyt sin stock; no se evaluará cobertura para esas observaciones.")
+
+    # Controles cruzados: detectan incompatibilidades antes de enviar datos al modelo.
+    fuentes_por_unidad = (
+        df.groupby("fuente", dropna=False)["unidad_volumen"]
+        .apply(lambda valores: sorted(set(valores.dropna().astype(str))))
+        .to_dict()
+    )
+    for fuente, unidades in fuentes_por_unidad.items():
+        if len(unidades) > 1:
+            errores.append(f"La fuente {fuente} mezcla unidades incompatibles: {unidades}.")
+
+    claves_cruce = ["periodo", "temporalidad", "area", "calibre_ml", "sabor"]
+    unidades_por_clave = df.groupby(claves_cruce, dropna=False)["unidad_volumen"].nunique(dropna=True)
+    cruces_unidades_incompatibles = int((unidades_por_clave > 1).sum())
+    if cruces_unidades_incompatibles:
+        advertencias.append(
+            f"Hay {cruces_unidades_incompatibles} clave(s) coincidentes entre fuentes con unidades distintas; "
+            "se permite contrastar dirección y cobertura, pero no sumar ni comparar magnitudes."
+        )
+
+    periodos_por_fuente = {
+        fuente: set(grupo["periodo"].dropna().astype(str))
+        for fuente, grupo in df.groupby("fuente")
+    }
+    pares_sin_solapamiento = []
+    fuentes_lista = sorted(periodos_por_fuente)
+    for indice, fuente_a in enumerate(fuentes_lista):
+        for fuente_b in fuentes_lista[indice + 1:]:
+            if not periodos_por_fuente[fuente_a].intersection(periodos_por_fuente[fuente_b]):
+                pares_sin_solapamiento.append(f"{fuente_a}/{fuente_b}")
+    if pares_sin_solapamiento:
+        advertencias.append(
+            "Fuentes sin períodos coincidentes: " + ", ".join(pares_sin_solapamiento)
+            + ". No deben cruzarse como si correspondieran al mismo corte."
+        )
     if errores:
         raise ValueError(" ".join(errores))
 
@@ -240,6 +277,8 @@ def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, dict]:
             "período AAAAMM", "valores no negativos", "porcentajes entre 0 y 100",
             "unidad y anonimización coherentes", "base de índice compatible",
             "claves duplicadas", "campos necesarios para métricas por fuente",
+            "unidades compatibles dentro de cada fuente", "unidades compatibles entre fuentes",
+            "solapamiento de períodos entre fuentes",
         ],
         "errores": [],
         "advertencias": advertencias,
@@ -248,6 +287,9 @@ def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, dict]:
         "periodo_minimo": str(df["periodo"].dropna().min()),
         "periodo_maximo": str(df["periodo"].dropna().max()),
         "filas_duplicadas_por_clave": duplicados,
+        "claves_con_unidades_incompatibles": cruces_unidades_incompatibles,
+        "pares_fuentes_sin_periodo_comun": pares_sin_solapamiento,
+        "unidades_por_fuente": fuentes_por_unidad,
     }
 
     df["rotacion_proxy"] = None
@@ -347,6 +389,38 @@ def generar_reporte_ejecucion(resultado: dict, integridad: dict, consumo: dict) 
     ])
 
 
+def sha256_archivo(ruta: Path) -> str:
+    digest = hashlib.sha256()
+    with ruta.open("rb") as archivo:
+        for bloque in iter(lambda: archivo.read(1024 * 1024), b""):
+            digest.update(bloque)
+    return digest.hexdigest()
+
+
+def generar_reporte_reproducibilidad(
+    archivos: list[dict], integridad: dict, modelo: str, system_prompt: str, user_template: str
+) -> dict:
+    return {
+        "estado": "reproducible" if not integridad.get("errores") else "no_reproducible",
+        "fecha_generacion_utc": datetime.now(timezone.utc).isoformat(),
+        "archivos_entrada": archivos,
+        "integridad": integridad,
+        "entorno": {
+            "python": platform.python_version(),
+            "pandas": pd.__version__,
+            "modelo": modelo,
+        },
+        "prompts": {
+            "system_prompt_sha256": hashlib.sha256(system_prompt.encode("utf-8")).hexdigest(),
+            "user_prompt_sha256": hashlib.sha256(user_template.encode("utf-8")).hexdigest(),
+        },
+        "instruccion_reproduccion": (
+            "Instalar requirements.txt y ejecutar ejecutar_agente.py con la misma entrada, modelo y prompts. "
+            "Los hashes permiten verificar que los artefactos no cambiaron."
+        ),
+    }
+
+
 def leer_prompt(ruta: Path) -> str:
     if not ruta.exists():
         raise FileNotFoundError(f"No se encontró el prompt: {ruta}")
@@ -371,6 +445,17 @@ def main() -> None:
     system_prompt = leer_prompt(raiz / "prompts" / "system_prompt.md")
     user_template = leer_prompt(raiz / "prompts" / "user_prompt.md")
     df, reporte_integridad = validar_y_preparar(args.entrada)
+    reporte_reproducibilidad = generar_reporte_reproducibilidad(
+        [{
+            "nombre": args.entrada.name,
+            "bytes": args.entrada.stat().st_size,
+            "sha256": sha256_archivo(args.entrada),
+        }],
+        reporte_integridad,
+        args.modelo,
+        system_prompt,
+        user_template,
+    )
 
     fecha = datetime.now(timezone.utc).isoformat()
     datos_json = df.where(pd.notna(df), None).to_dict(orient="records")
@@ -407,6 +492,9 @@ def main() -> None:
     consumo["archivo_entrada"] = args.entrada.name
     (args.salida / "integridad_datos.json").write_text(
         json.dumps(reporte_integridad, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    (args.salida / "reporte_reproducibilidad.json").write_text(
+        json.dumps(reporte_reproducibilidad, ensure_ascii=False, indent=2), encoding="utf-8"
     )
     (args.salida / "log_consumo_api.json").write_text(
         json.dumps(consumo, ensure_ascii=False, indent=2), encoding="utf-8"
