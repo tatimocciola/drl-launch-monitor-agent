@@ -46,3 +46,23 @@ No se monetiza el ahorro de tiempo humano porque todavía no se midió una líne
 * La corrección automática usa el borrador y las infracciones, no repite toda la base.
 * Se registra el número real de llamadas para que un reintento no quede oculto.
 * Ante un error 429 no se reutiliza una salida anterior como si fuera nueva.
+
+## Medición real — corrida 05
+
+La reproducción técnica de la corrida 01 registró dos llamadas a `gemini-3.5-flash-lite`:
+
+| Métrica | Resultado |
+|---|---:|
+| Tokens de entrada | 32.678 |
+| Tokens de salida | 5.162 |
+| Tokens totales | 37.840 |
+| Costo equivalente por corrida | USD 0,022708 |
+
+Proyección basada en esta medición:
+
+| Escenario | Corridas | Costo mensual | Costo anual |
+|---|---:|---:|---:|
+| Base | 2 por mes | USD 0,045416 | USD 0,544992 |
+| Intensivo | 8 por mes | USD 0,181664 | USD 2,179968 |
+
+La medición se conserva en `corridas/corrida_05/log_consumo_api.json` y `log_consola_api.txt`. El costo efectivo puede ser cero bajo el nivel gratuito; la proyección utiliza tarifa paga para estimar una operación sostenible.
