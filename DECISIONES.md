@@ -73,3 +73,11 @@ La evaluación externa otorgó 96,25 puntos y señaló que el costo estaba calcu
 ## Plan de contingencia de aprobación
 
 La Brand Manager es responsable primaria. Ante su ausencia, la aprobación se deriva al Marketing Manager, quien debe dejar constancia de su nombre, fecha y decisión en la revisión humana. Si ambas personas están ausentes, el sistema puede producir y archivar el análisis, pero ninguna recomendación se ejecuta hasta contar con aprobación. No existe aprobación automática por silencio.
+
+## Iteración 4 — Validación cruzada y reproducibilidad
+
+Una segunda evaluación recomendó detectar incompatibilidades entre fuentes y generar evidencia técnica de reconstrucción. Se incorporaron controles de unidades dentro de cada fuente, unidades incompatibles sobre claves coincidentes y falta de períodos comunes. También se agregó `reporte_reproducibilidad.json`, con hashes SHA-256 de las entradas y prompts, versiones de Python y pandas, modelo utilizado y resultado de integridad.
+
+Se creó `VERSIONES.md` para navegar el historial real de los prompts y `GOBIERNO.md` para formalizar qué ocurre si faltan la responsable primaria y su suplente.
+
+El log original de tokens de la corrida 01 no puede reconstruirse porque `usage_metadata` no se guardó en ese momento. No se inventa ni se presenta una estimación como medición histórica. La medición directa se demostrará mediante una nueva corrida reproducible con el código instrumentado.
