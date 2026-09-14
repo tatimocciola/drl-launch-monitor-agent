@@ -52,7 +52,7 @@ El sistema genera:
 * `log_consola_api.txt`: línea de log legible que registra directamente los contadores informados por la API.
 * `reporte_ejecucion.md`: síntesis automática de entrada, integridad, conclusión, acciones, consumo y supervisión.
 
-La aplicación Streamlit entrega estos cinco archivos dentro de un único ZIP.
+La aplicación Streamlit entrega estos seis archivos dentro de un único ZIP.
 
 ## Validaciones de integridad
 
@@ -61,6 +61,8 @@ Antes de invocar el modelo se controlan columnas obligatorias, archivo vacío, d
 ## Supervisión y contingencia
 
 La autonomía es L2: el agente analiza y recomienda, pero no ejecuta decisiones. La Brand Manager es la responsable primaria. Si está ausente, revisa el Marketing Manager y documenta nombre, fecha y decisión. Si ambos están ausentes, la corrida queda archivada y pendiente de aprobación; ninguna recomendación comercial, de portfolio, inversión, distribución o abastecimiento se ejecuta automáticamente.
+
+Si el responsable suplente no está disponible, no existe sustitución automática: la corrida queda `pendiente_de_aprobacion`, se archiva con sus artefactos y la decisión permanece bloqueada. Un tercer aprobador sólo puede actuar si fue designado previamente y por escrito por la Dirección.
 
 El procedimiento completo está en [GOBIERNO.md](GOBIERNO.md). El historial funcional y los enlaces directos a las versiones de los prompts están en [VERSIONES.md](VERSIONES.md).
 
@@ -72,6 +74,8 @@ Se utiliza `gemini-3.5-flash-lite` por su relación entre costo, velocidad y cap
 
 El nivel gratuito puede producir costo efectivo cero; se informa igualmente el equivalente a tarifa paga para estimar una operación futura. La proyección mensual se obtiene multiplicando el costo medido por la cantidad esperada de corridas: escenario base de 2 corridas mensuales y escenario intensivo de 8. Las cifras se actualizan con el log real de cada ejecución. Fuente: https://ai.google.dev/gemini-api/docs/pricing
 
+Con el costo real de USD 0,022708 por corrida, el escenario base proyecta 0,5 corrida semanal y 24 anuales: USD 0,011354 por semana y USD 0,544992 por año. El escenario intensivo proyecta 2 corridas semanales y 96 anuales: USD 0,045416 por semana y USD 2,179968 por año.
+
 ## Corridas documentadas
 
-El directorio `corridas/` contiene cuatro pruebas verificables con entrada, salida y revisión humana: una corrida inicial, una Scentia, una Logyt con datos reales y una multifuente. Las limitaciones y correcciones se mantienen visibles como parte del proceso.
+El directorio `corridas/` contiene cinco pruebas verificables, incluida la reproducción de la corrida 01 con medición directa de tokens. Las limitaciones y correcciones se mantienen visibles como parte del proceso.
