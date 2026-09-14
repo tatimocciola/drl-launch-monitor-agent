@@ -49,6 +49,7 @@ El sistema genera:
 * `integridad_datos.json`: controles ejecutados, errores bloqueantes, advertencias y cobertura de la entrada.
 * `reporte_reproducibilidad.json`: hashes SHA-256 de entradas y prompts, versiones del entorno y resultado de integridad.
 * `log_consumo_api.json`: modelo, tokens medidos mediante `usage_metadata`, tarifas de referencia y costo estimado.
+* `log_consola_api.txt`: línea de log legible que registra directamente los contadores informados por la API.
 * `reporte_ejecucion.md`: síntesis automática de entrada, integridad, conclusión, acciones, consumo y supervisión.
 
 La aplicación Streamlit entrega estos cinco archivos dentro de un único ZIP.
