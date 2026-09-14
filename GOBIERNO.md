@@ -6,11 +6,21 @@ El sistema opera con autonomía L2: analiza archivos, calcula indicadores y prop
 
 ## Responsables
 
-| Situación | Responsable | Facultad |
-|---|---|---|
-| Operación normal | Brand Manager | Aprobar, rechazar o solicitar correcciones |
-| Ausencia de Brand Manager | Marketing Manager | Suplencia temporal con registro obligatorio |
-| Ausencia de ambos | Sin aprobador habilitado | Sólo generar y archivar; prohibido ejecutar |
+| Situación | Responsable | Autoridad concreta | Límites |
+|---|---|---|---|
+| Operación normal | Brand Manager | Aprobar o rechazar la validez analítica de la corrida; solicitar correcciones; autorizar que el reporte se comparta con Marketing, Comercial, Trade Marketing y Supply como recomendación | No puede tratar la recomendación del agente como autorización presupuestaria, alta o baja de SKU, modificación de forecast ni orden de abastecimiento |
+| Ausencia de Brand Manager | Marketing Manager | Actuar como suplente; aprobar o rechazar la validez analítica; solicitar correcciones; autorizar la circulación del reporte dentro de planes y presupuestos ya aprobados | No puede ampliar el alcance del agente ni aprobar inversiones, cambios de portfolio o abastecimiento fuera del circuito corporativo correspondiente |
+| Ausencia de ambos | Sin aprobador habilitado | Ninguna autoridad de aprobación; sólo se permite generar, registrar y archivar la corrida | Prohibido distribuirla como instrucción, ejecutar acciones o interpretar el silencio como aprobación |
+
+## Matriz de decisión
+
+| Decisión | Agente | Brand Manager | Marketing Manager suplente | Área funcional |
+|---|---|---|---|---|
+| Calcular indicadores y redactar recomendaciones | Ejecuta | Supervisa | Supervisa en suplencia | Informada |
+| Aprobar la validez del análisis | Propone | Aprueba/rechaza | Aprueba/rechaza en ausencia | Informada |
+| Compartir el reporte como recomendación | No autoriza | Autoriza | Autoriza en ausencia | Recibe |
+| Ejecutar inversión o promoción | No ejecuta | Solicita por circuito vigente | Solicita por circuito vigente | Aprueba según política interna |
+| Cambiar portfolio, forecast o abastecimiento | No ejecuta | Solicita por circuito vigente | Solicita por circuito vigente | Aprueba según política interna |
 
 ## Contingencia ante ausencia de ambos responsables
 
@@ -24,6 +34,7 @@ Si el responsable suplente —Marketing Manager— no está disponible, no se de
 6. El primer responsable habilitado que regrese documenta en `revision_humana.md`: nombre, rol, fecha, decisión y correcciones.
 7. La falta de respuesta nunca se interpreta como aprobación tácita.
 8. Sólo puede intervenir otro aprobador si la Dirección lo designa previamente y por escrito. Sin esa designación, la decisión permanece bloqueada.
+9. La designación excepcional debe indicar nombre, rol, corrida alcanzada y vigencia; se adjunta a `revision_humana.md` antes de cualquier circulación ejecutiva.
 
 ## Escalamiento excepcional
 
