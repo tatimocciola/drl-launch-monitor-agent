@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -150,7 +151,7 @@ RESPONSE_SCHEMA = {
 }
 
 
-def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, list[str]]:
+def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, dict]:
     if isinstance(ruta_csv, pd.DataFrame):
         df = ruta_csv.copy()
     else:
@@ -174,6 +175,7 @@ def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, list[str]]:
         df[columna] = pd.to_numeric(df[columna], errors="coerce")
 
     errores = []
+    advertencias = []
     fuentes_invalidas = sorted(set(df["fuente"].dropna()) - FUENTES_VALIDAS)
     temporalidades_invalidas = sorted(set(df["temporalidad"].dropna()) - TEMPORALIDADES_VALIDAS)
     sabores_invalidos = sorted(set(df["sabor"].dropna()) - SABORES_VALIDOS)
@@ -188,6 +190,20 @@ def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, list[str]]:
         errores.append(f"Calibres no reconocidos: {calibres_invalidos}")
     if df["volumen_cc"].isna().any():
         errores.append("Hay filas sin volumen_cc numérico.")
+    periodos_invalidos = sorted({
+        str(periodo) for periodo in df["periodo"].dropna()
+        if not re.fullmatch(r"\d{6}", str(periodo)) or not 1 <= int(str(periodo)[4:6]) <= 12
+    })
+    if periodos_invalidos:
+        errores.append(f"Períodos inválidos; se espera AAAAMM: {periodos_invalidos[:10]}")
+    for columna in ["volumen_cc", "clientes_con_compra", "stock_cc", "volumen_fytd_cc"]:
+        cantidad = int((df[columna].dropna() < 0).sum())
+        if cantidad:
+            errores.append(f"{columna} contiene {cantidad} valor(es) negativo(s).")
+    for columna in ["wd_pct", "nd_pct"]:
+        cantidad = int(((df[columna].dropna() < 0) | (df[columna].dropna() > 100)).sum())
+        if cantidad:
+            errores.append(f"{columna} contiene {cantidad} valor(es) fuera del rango 0-100.")
     unidades_invalidas = sorted(set(df["unidad_volumen"].dropna()) - {"CC", "INDICE"})
     if unidades_invalidas:
         errores.append(f"Unidades de volumen no reconocidas: {unidades_invalidas}")
@@ -203,8 +219,36 @@ def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, list[str]]:
     )
     if (bases_por_grupo > 1).any():
         errores.append("Hay bases de índice incompatibles dentro de una misma fuente y calibre.")
+
+    claves_registro = ["periodo", "temporalidad", "fuente", "area", "calibre_ml", "sabor"]
+    duplicados = int(df.duplicated(claves_registro, keep=False).sum())
+    if duplicados:
+        advertencias.append(
+            f"Se detectaron {duplicados} filas con claves repetidas; deben revisarse antes de sumar volúmenes."
+        )
+    if (df["fuente"].eq("scentia") & df["nd_pct"].isna()).any():
+        advertencias.append("Hay filas Scentia sin ND; no se calculará rotación para esas observaciones.")
+    if (df["fuente"].eq("logyt") & df["stock_cc"].isna()).any():
+        advertencias.append("Hay filas Logyt sin stock; no se evaluará cobertura para esas observaciones.")
     if errores:
         raise ValueError(" ".join(errores))
+
+    reporte_integridad = {
+        "estado": "aprobado_con_advertencias" if advertencias else "aprobado",
+        "controles_ejecutados": [
+            "columnas obligatorias", "archivo no vacío", "dominios admitidos",
+            "período AAAAMM", "valores no negativos", "porcentajes entre 0 y 100",
+            "unidad y anonimización coherentes", "base de índice compatible",
+            "claves duplicadas", "campos necesarios para métricas por fuente",
+        ],
+        "errores": [],
+        "advertencias": advertencias,
+        "filas": int(len(df)),
+        "fuentes": sorted(df["fuente"].dropna().astype(str).unique().tolist()),
+        "periodo_minimo": str(df["periodo"].dropna().min()),
+        "periodo_maximo": str(df["periodo"].dropna().max()),
+        "filas_duplicadas_por_clave": duplicados,
+    }
 
     df["rotacion_proxy"] = None
     mascara_clientes = (
@@ -241,7 +285,66 @@ def validar_y_preparar(ruta_csv: Path) -> tuple[pd.DataFrame, list[str]]:
     df.loc[mascara_mix, "mix_sabor"] = (
         df.loc[mascara_mix, "volumen_cc"] / df.loc[mascara_mix, "volumen_total_calibre_cc"]
     ).round(4)
-    return df, []
+    return df, reporte_integridad
+
+
+def construir_log_consumo(response, corrida_id: str, fecha: str, modelo: str) -> dict:
+    usage = getattr(response, "usage_metadata", None)
+    tokens_entrada = int(getattr(usage, "prompt_token_count", 0) or 0) if usage else 0
+    tokens_salida = int(getattr(usage, "candidates_token_count", 0) or 0) if usage else 0
+    tokens_totales = int(getattr(usage, "total_token_count", 0) or 0) if usage else 0
+    tarifa_entrada = 0.30
+    tarifa_salida = 2.50
+    costo = tokens_entrada / 1_000_000 * tarifa_entrada + tokens_salida / 1_000_000 * tarifa_salida
+    return {
+        "corrida_id": corrida_id,
+        "fecha_ejecucion_utc": fecha,
+        "modelo": modelo,
+        "tokens_entrada": tokens_entrada,
+        "tokens_salida": tokens_salida,
+        "tokens_totales": tokens_totales,
+        "tarifa_entrada_usd_por_millon": tarifa_entrada,
+        "tarifa_salida_usd_por_millon": tarifa_salida,
+        "costo_estimado_usd": round(costo, 6),
+        "fuente_medicion": "usage_metadata devuelto por Gemini API",
+        "tarifa_referencia": "https://ai.google.dev/gemini-api/docs/pricing",
+        "tarifa_referencia_fecha": "2026-09-13",
+    }
+
+
+def generar_reporte_ejecucion(resultado: dict, integridad: dict, consumo: dict) -> str:
+    corrida = resultado.get("corrida", {})
+    hipotesis = resultado.get("resultado_hipotesis", {})
+    revision = resultado.get("revision_humana", {})
+    advertencias = integridad.get("advertencias", [])
+    hallazgos = resultado.get("hallazgos_priorizados", [])
+    lineas_hallazgos = [
+        f"{h.get('prioridad', '-')}. {h.get('evidencia', '')} — Acción propuesta: {h.get('accion_sugerida', '')}"
+        for h in hallazgos
+    ] or ["- No se generaron hallazgos priorizados."]
+    return "\n".join([
+        f"# Reporte final de ejecución — {corrida.get('id', consumo.get('corrida_id', 'sin_id'))}",
+        "", f"- Fecha UTC: {corrida.get('fecha_ejecucion', consumo.get('fecha_ejecucion_utc', ''))}",
+        f"- Archivos: {corrida.get('archivo', '')}",
+        f"- Fuentes: {', '.join(corrida.get('fuentes_analizadas', []))}",
+        f"- Períodos: {', '.join(corrida.get('periodos_analizados', []))}",
+        "", "## Integridad de datos", "",
+        f"Estado: **{integridad.get('estado', 'sin_dato')}**. Filas procesadas: {integridad.get('filas', 0)}.",
+        *( ["", "Advertencias:", *[f"- {a}" for a in advertencias]] if advertencias else ["", "Sin advertencias de integridad."] ),
+        "", "## Resultado de la hipótesis", "",
+        f"Estado: **{hipotesis.get('estado', '')}**. Confianza: **{hipotesis.get('nivel_confianza', '')}**.",
+        "", hipotesis.get("justificacion", ""), "", "## Hallazgos y acciones", "", *lineas_hallazgos,
+        "", "## Consumo de API", "",
+        f"- Modelo: {consumo.get('modelo', '')}",
+        f"- Tokens de entrada: {consumo.get('tokens_entrada', 0)}",
+        f"- Tokens de salida: {consumo.get('tokens_salida', 0)}",
+        f"- Tokens totales: {consumo.get('tokens_totales', 0)}",
+        f"- Costo estimado a tarifa paga: USD {consumo.get('costo_estimado_usd', 0):.6f}",
+        "", "## Supervisión", "",
+        f"Requiere revisión humana: {revision.get('requiere_revision_humana', True)}.",
+        f"Responsable final: {revision.get('responsable_final', 'Brand Manager')}.",
+        "Las recomendaciones no se ejecutan hasta recibir aprobación humana o aplicar el plan de contingencia documentado.",
+    ])
 
 
 def leer_prompt(ruta: Path) -> str:
@@ -267,7 +370,7 @@ def main() -> None:
     raiz = Path(__file__).resolve().parent
     system_prompt = leer_prompt(raiz / "prompts" / "system_prompt.md")
     user_template = leer_prompt(raiz / "prompts" / "user_prompt.md")
-    df, _ = validar_y_preparar(args.entrada)
+    df, reporte_integridad = validar_y_preparar(args.entrada)
 
     fecha = datetime.now(timezone.utc).isoformat()
     datos_json = df.where(pd.notna(df), None).to_dict(orient="records")
@@ -300,20 +403,18 @@ def main() -> None:
         json.dumps(datos_json, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
-    usage = getattr(response, "usage_metadata", None)
-    metadatos = {
-        "corrida_id": args.corrida,
-        "fecha_ejecucion_utc": fecha,
-        "archivo_entrada": args.entrada.name,
-        "modelo": args.modelo,
-        "tokens_prompt": getattr(usage, "prompt_token_count", None) if usage else None,
-        "tokens_salida": getattr(usage, "candidates_token_count", None) if usage else None,
-        "tokens_totales": getattr(usage, "total_token_count", None) if usage else None,
-    }
-    (args.salida / "metadatos.json").write_text(
-        json.dumps(metadatos, ensure_ascii=False, indent=2), encoding="utf-8"
+    consumo = construir_log_consumo(response, args.corrida, fecha, args.modelo)
+    consumo["archivo_entrada"] = args.entrada.name
+    (args.salida / "integridad_datos.json").write_text(
+        json.dumps(reporte_integridad, ensure_ascii=False, indent=2), encoding="utf-8"
     )
-    print(f"Corrida completada. Resultado: {args.salida / 'salida.json'}")
+    (args.salida / "log_consumo_api.json").write_text(
+        json.dumps(consumo, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    (args.salida / "reporte_ejecucion.md").write_text(
+        generar_reporte_ejecucion(resultado, reporte_integridad, consumo), encoding="utf-8"
+    )
+    print(f"Corrida completada. Reporte: {args.salida / 'reporte_ejecucion.md'}")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,14 @@
 import json
 import os
+from io import BytesIO
 from datetime import datetime, timezone
+from zipfile import ZIP_DEFLATED, ZipFile
 
 import streamlit as st
 from google import genai
 from google.genai import types
 
-from ejecutar_agente import RESPONSE_SCHEMA, leer_prompt, validar_y_preparar
+from ejecutar_agente import RESPONSE_SCHEMA, generar_reporte_ejecucion, leer_prompt, validar_y_preparar
 from preparar_scentia import normalizar_scentia_zip
 
 
@@ -149,6 +151,7 @@ if ejecutar:
     st.session_state.pop("controles_salida", None)
     st.session_state.pop("tokens", None)
     st.session_state.pop("metricas_ejecucion", None)
+    st.session_state.pop("reporte_integridad", None)
     if not archivos:
         st.error("Seleccioná al menos un CSV normalizado o un ZIP de Scentia.")
         st.stop()
@@ -171,7 +174,7 @@ if ejecutar:
             except Exception as error_archivo:
                 raise ValueError(f"Error en {archivo.name}: {error_archivo}") from error_archivo
         import pandas as pd
-        df = pd.concat(entradas, ignore_index=True)
+        df, reporte_integridad = validar_y_preparar(pd.concat(entradas, ignore_index=True))
         st.caption(
             f"{len(archivos)} archivo(s) procesado(s); {len(df)} registros normalizados. "
             "Las bases originales no se envían al modelo."
@@ -230,6 +233,7 @@ if ejecutar:
         st.session_state["resultado"] = resultado_generado
         st.session_state["tokens"] = [getattr(r, "usage_metadata", None) for r in responses]
         st.session_state["metricas_ejecucion"] = calcular_metricas_ejecucion(responses, modelo)
+        st.session_state["reporte_integridad"] = reporte_integridad
     except Exception as error:
         mensaje = str(error)
         if "429" in mensaje or "RESOURCE_EXHAUSTED" in mensaje:
@@ -277,6 +281,12 @@ with st.expander("Calidad, contradicciones y revisión humana"):
     st.write("Responsable final:", resultado["revision_humana"]["responsable_final"])
 
 metricas_ejecucion = st.session_state.get("metricas_ejecucion", {})
+reporte_integridad = st.session_state.get("reporte_integridad", {})
+if reporte_integridad:
+    with st.expander("Validaciones automáticas de integridad"):
+        st.write("Estado:", reporte_integridad["estado"])
+        st.write("Controles ejecutados:", reporte_integridad["controles_ejecutados"])
+        st.write("Advertencias:", reporte_integridad["advertencias"] or ["Sin advertencias."])
 if metricas_ejecucion:
     with st.expander("Consumo y costo estimado de la corrida"):
         m1, m2, m3 = st.columns(3)
@@ -292,9 +302,23 @@ resultado_descarga = dict(resultado)
 if metricas_ejecucion:
     resultado_descarga["metricas_ejecucion"] = metricas_ejecucion
 
+reporte_final = generar_reporte_ejecucion(resultado, reporte_integridad, metricas_ejecucion)
+paquete = BytesIO()
+with ZipFile(paquete, "w", ZIP_DEFLATED) as zip_salida:
+    zip_salida.writestr("salida.json", json.dumps(resultado_descarga, ensure_ascii=False, indent=2))
+    zip_salida.writestr("integridad_datos.json", json.dumps(reporte_integridad, ensure_ascii=False, indent=2))
+    zip_salida.writestr("log_consumo_api.json", json.dumps(metricas_ejecucion, ensure_ascii=False, indent=2))
+    zip_salida.writestr("reporte_ejecucion.md", reporte_final)
+
 st.download_button(
     "Descargar salida JSON",
     data=json.dumps(resultado_descarga, ensure_ascii=False, indent=2),
     file_name=f"{resultado['corrida']['id']}_salida.json",
     mime="application/json",
+)
+st.download_button(
+    "Descargar paquete completo de evidencia",
+    data=paquete.getvalue(),
+    file_name=f"{resultado['corrida']['id']}_evidencia.zip",
+    mime="application/zip",
 )

@@ -165,3 +165,15 @@ El sistema opera con supervisión L2:
 * Ninguna recomendación se ejecuta automáticamente.
 * Las decisiones sobre portfolio, distribución, clientes o inversión requieren aprobación humana.
 * Cuando falte información o existan contradicciones, indicá `requiere_revision_humana: true`.
+
+## 7. Plan de contingencia de supervisión
+
+La responsable primaria de aprobar o rechazar las recomendaciones es la Brand Manager.
+
+Si la Brand Manager no está disponible:
+
+1. La revisión se deriva al Marketing Manager como responsable suplente.
+2. El suplente debe revisar evidencia, limitaciones, conflictos entre fuentes y acciones propuestas, dejando nombre, fecha y decisión en `revision_humana.md`.
+3. Si tampoco está disponible el Marketing Manager, la corrida puede generarse y archivarse, pero queda con estado `pendiente_de_aprobacion` y no se ejecuta ninguna recomendación.
+4. Las decisiones de inversión, portfolio, distribución o abastecimiento nunca se aprueban por silencio ni por vencimiento de plazo.
+5. Cuando regrese la responsable primaria, debe revisar cualquier decisión aprobada por suplencia que implique un cambio comercial material.
