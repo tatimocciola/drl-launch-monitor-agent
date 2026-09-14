@@ -1,0 +1,1 @@
+[2026-09-14T00:38:57.513788+00:00] corrida=corrida_05_reproduccion_corrida_01 modelo=gemini-3.5-flash-lite prompt_tokens=32678 output_tokens=5162 total_tokens=37840 costo_estimado_usd=0.022708 fuente=Gemini_usage_metadata

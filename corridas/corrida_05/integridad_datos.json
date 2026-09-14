@@ -1,0 +1,36 @@
+{
+  "estado": "aprobado_con_advertencias",
+  "controles_ejecutados": [
+    "columnas obligatorias",
+    "archivo no vacío",
+    "dominios admitidos",
+    "período AAAAMM",
+    "valores no negativos",
+    "porcentajes entre 0 y 100",
+    "unidad y anonimización coherentes",
+    "base de índice compatible",
+    "claves duplicadas",
+    "campos necesarios para métricas por fuente",
+    "unidades compatibles dentro de cada fuente",
+    "unidades compatibles entre fuentes",
+    "solapamiento de períodos entre fuentes"
+  ],
+  "errores": [],
+  "advertencias": [
+    "Hay filas Logyt sin stock; no se evaluará cobertura para esas observaciones."
+  ],
+  "filas": 97,
+  "fuentes": [
+    "logyt"
+  ],
+  "periodo_minimo": "202509",
+  "periodo_maximo": "202608",
+  "filas_duplicadas_por_clave": 0,
+  "claves_con_unidades_incompatibles": 0,
+  "pares_fuentes_sin_periodo_comun": [],
+  "unidades_por_fuente": {
+    "logyt": [
+      "INDICE"
+    ]
+  }
+}

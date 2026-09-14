@@ -1,0 +1,186 @@
+{
+  "corrida": {
+    "id": "corrida_05_reproduccion_corrida_01",
+    "fecha_ejecucion": "2026-09-14T00:38:57.513788+00:00",
+    "archivo": "entrada.csv.csv",
+    "fuentes_analizadas": [
+      "logyt"
+    ],
+    "periodos_analizados": [
+      "202509",
+      "202510",
+      "202511",
+      "202512",
+      "202601",
+      "202602",
+      "202603",
+      "202604",
+      "202605",
+      "202606",
+      "202607",
+      "202608"
+    ],
+    "temporalidades": [
+      "LM"
+    ]
+  },
+  "calidad_datos": {
+    "estado": "parcial",
+    "problemas_detectados": [
+      "Ausencia de fuentes complementarias como sell-in, sell-out de distribuidores y Scentia",
+      "Falta de métricas de clientes con compra, stock detallado y distribución ponderada o numérica"
+    ],
+    "datos_faltantes_relevantes": [
+      "Volumen absoluto en cajas convertidas de 9 litros",
+      "Clientes con compra y rotación proxy",
+      "Datos de sell-in y sell-out de distribuidores",
+      "Información de Scentia"
+    ]
+  },
+  "resultado_hipotesis": {
+    "estado": "evidencia_insuficiente",
+    "justificacion": "La fuente disponible (Logyt) contiene únicamente índices de volumen y carece de métricas de rotación proxy y de las fuentes de sell-in, sell-out de distribuidores y Scentia necesarias para comprobar si la incorporación de los cuatro sabores acelera la rotación general.",
+    "nivel_confianza": "alto"
+  },
+  "desempeno_por_calibre": [
+    {
+      "calibre": "473 ml",
+      "evidencia": [
+        "Fuente logyt, períodos 202509 a 202608, temporalidad LM: volumen total indexado (Total DRL 473 ml 2025-09 = 100) oscila entre un máximo de 168.548 en 202512 y un mínimo de 65.173 en 202605."
+      ],
+      "interpretacion": "El calibre 473 ml muestra una fuerte estacionalidad con picos máximos en diciembre de 2025, contrayéndose durante los meses de invierno.",
+      "limitaciones": [
+        "Los datos están anonimizados como índices basados en Total DRL por calibre en 2025-09 = 100 y no representan volúmenes absolutos",
+        "Ausencia de datos de Green Apple y Red Berries en gran parte del período analizado para este calibre en la fuente Logyt"
+      ]
+    },
+    {
+      "calibre": "1 L",
+      "evidencia": [
+        "Fuente logyt, períodos 202509 a 202608, temporalidad LM: volumen total indexado (Total DRL 1000 ml 2025-09 = 100) alcanza un máximo de 188.162 en 202512 y un mínimo de 68.785 en 202605."
+      ],
+      "interpretacion": "El calibre de 1 L presenta un comportamiento estacional similar al de 473 ml, con un pico claro en el mes de diciembre de 2025 y menores niveles de volumen en mayo de 2026.",
+      "limitaciones": [
+        "Datos anonimizados basados en índices de volumen basados en Total DRL por calibre en 2025-09 = 100",
+        "Falta de métricas de stock y clientes con compra para evaluar rotación"
+      ]
+    }
+  ],
+  "rol_por_sabor": [
+    {
+      "sabor": "Limón",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Fuente logyt, períodos 202509 a 202608, temporalidad LM: el mix de sabor se mantiene estables alrededor del 30% al 38% del volumen total del calibre."
+      ],
+      "interpretacion": "Limón actúa como uno de los pilares principales de volumen dentro del calibre de 473 ml.",
+      "dato_faltante": "Clientes con compra y rotación proxy"
+    },
+    {
+      "sabor": "Vodka",
+      "calibre": "473 ml",
+      "evidencia": [
+        "Fuente logyt, períodos 202509 a 202608, temporalidad LM: el mix de sabor representa entre el 20% y el 25% del volumen total del calibre."
+      ],
+      "interpretacion": "Vodka complementa el volumen de Limón en el calibre de 473 ml.",
+      "dato_faltante": "Clientes con compra y rotación proxy"
+    },
+    {
+      "sabor": "Limón",
+      "calibre": "1 L",
+      "evidencia": [
+        "Fuente logyt, períodos 202509 a 202608, temporalidad LM: el mix de sabor se ubica consistentemente entre el 30% y el 32% del volumen total del calibre."
+      ],
+      "interpretacion": "Mantiene un rol estructural relevante de venta en el calibre de 1 L.",
+      "dato_faltante": "Clientes con compra y rotación proxy"
+    },
+    {
+      "sabor": "Vodka",
+      "calibre": "1 L",
+      "evidencia": [
+        "Fuente logyt, períodos 202509 a 202608, temporalidad LM: el mix de sabor representa el mayor porcentaje del calibre, oscilando entre el 37% y el 41%."
+      ],
+      "interpretacion": "Es el sabor con mayor aporte volumétrico dentro del calibre de 1 L en la cadena analizada.",
+      "dato_faltante": "Clientes con compra y rotación proxy"
+    },
+    {
+      "sabor": "Red Berries",
+      "calibre": "1 L",
+      "evidencia": [
+        "Fuente logyt, períodos 202509 a 202608, temporalidad LM: presenta mix de sabor estables entre el 4.8% y el 7.1% del volumen del calibre."
+      ],
+      "interpretacion": "Aporta volumen complementario de manera sostenida en el calibre de 1 L.",
+      "dato_faltante": "Clientes con compra y rotación proxy"
+    },
+    {
+      "sabor": "Green Apple",
+      "calibre": "1 L",
+      "evidencia": [
+        "Fuente logyt, períodos 202512, 202601, 202602, 202603, 202604, 202605, 202606, 202607 y 202608: registra volúmenes indexados menores al 6% del total del calibre."
+      ],
+      "interpretacion": "Registra presencia intermitente o marginal en el volumen analizado de cadenas de supermercados para el calibre de 1 L.",
+      "dato_faltante": "Clientes con compra y rotación proxy"
+    }
+  ],
+  "hallazgos_priorizados": [
+    {
+      "prioridad": 1,
+      "nivel": "calibre",
+      "fuente": "logyt",
+      "periodo": "202509 a 202608",
+      "temporalidad": "LM",
+      "evidencia": "Fuente logyt muestra picos máximos de volumen indexado en diciembre de 2025 (168.548 para 473 ml y 188.162 para 1 L) y mínimos en mayo de 2026 (65.173 y 68.785 respectivamente).",
+      "interpretacion": "Se evidencia una estacionalidad muy marcada en las cadenas de supermercados para ambos calibres, concentrando el volumen en el período estival.",
+      "accion_sugerida": "Ajustar la planificación de inventarios y abastecimiento en cadenas según la estacionalidad detectada.",
+      "responsable_sugerido": "Supply",
+      "kpi_seguimiento": "Nivel de cumplimiento de abastecimiento contra demanda mensual",
+      "confianza": "alta"
+    }
+  ],
+  "dashboard": {
+    "hallazgos": [
+      {
+        "titulo": "Estacionalidad marcada en cadenas",
+        "evidencia": "Fuente logyt, períodos 202509 a 202608: los índices de volumen total muestran incrementos significativos en diciembre de 2025 y contracciones hacia mediados de 2026.",
+        "fuente": "logyt",
+        "periodo": "202509 a 202608",
+        "interpretacion": "El consumo en cadenas de supermercados responde fuertemente a factores estacionales de verano e invierno.",
+        "confianza": "alta"
+      }
+    ],
+    "oportunidades": [],
+    "debilidades": [
+      {
+        "titulo": "Falta de información complementaria",
+        "evidencia": "Dataset provisto contiene exclusivamente registros de Logyt anonimizados sin métricas de sell-in, distribuidores o Scentia.",
+        "fuente": "logyt",
+        "periodo": "202509 a 202608",
+        "interpretacion": "La ausencia de múltiples fuentes limita el alcance analítico para validar completamente la hipótesis de rotación general.",
+        "confianza": "alta"
+      }
+    ],
+    "amenazas": []
+  },
+  "contradicciones_entre_fuentes": [],
+  "revision_humana": {
+    "requiere_revision_humana": true,
+    "puntos_a_revisar": [
+      "Verificar la disponibilidad de las fuentes de sell-in, sell-out de distribuidores y Scentia para completar el análisis de rotación.",
+      "Validar el tratamiento de los datos anonimizados basados en índices de volumen de Logyt."
+    ],
+    "responsable_final": "Brand Manager"
+  },
+  "metricas_ejecucion": {
+    "modelo": "gemini-3.5-flash-lite",
+    "llamadas_modelo": 2,
+    "tokens_entrada": 32678,
+    "tokens_salida": 5162,
+    "tokens_totales": 37840,
+    "tarifa_entrada_usd_por_millon": 0.3,
+    "tarifa_salida_usd_por_millon": 2.5,
+    "costo_estimado_usd": 0.022708,
+    "fuente_medicion": "usage_metadata devuelto por Gemini API",
+    "tarifa_referencia_fecha": "2026-09-13",
+    "tarifa_referencia_url": "https://ai.google.dev/gemini-api/docs/pricing"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "estado": "reproducible",
+  "fecha_generacion_utc": "2026-09-14T00:38:57.513738+00:00",
+  "archivos_entrada": [
+    {
+      "nombre": "entrada.csv.csv",
+      "bytes": 8941,
+      "sha256": "22d42e50cee2f453fdc5b50ce7a961c6cf6c64c22ad5f7a57ff469f4299fd07f"
+    }
+  ],
+  "integridad": {
+    "estado": "aprobado_con_advertencias",
+    "controles_ejecutados": [
+      "columnas obligatorias",
+      "archivo no vacío",
+      "dominios admitidos",
+      "período AAAAMM",
+      "valores no negativos",
+      "porcentajes entre 0 y 100",
+      "unidad y anonimización coherentes",
+      "base de índice compatible",
+      "claves duplicadas",
+      "campos necesarios para métricas por fuente",
+      "unidades compatibles dentro de cada fuente",
+      "unidades compatibles entre fuentes",
+      "solapamiento de períodos entre fuentes"
+    ],
+    "errores": [],
+    "advertencias": [
+      "Hay filas Logyt sin stock; no se evaluará cobertura para esas observaciones."
+    ],
+    "filas": 97,
+    "fuentes": [
+      "logyt"
+    ],
+    "periodo_minimo": "202509",
+    "periodo_maximo": "202608",
+    "filas_duplicadas_por_clave": 0,
+    "claves_con_unidades_incompatibles": 0,
+    "pares_fuentes_sin_periodo_comun": [],
+    "unidades_por_fuente": {
+      "logyt": [
+        "INDICE"
+      ]
+    }
+  },
+  "entorno": {
+    "python": "3.14.7",
+    "pandas": "3.0.5",
+    "modelo": "gemini-3.5-flash-lite"
+  },
+  "prompts": {
+    "system_prompt_sha256": "93a2c293795eaa9d1944ba0afd98f4d7dc7477707b743e28bbb65d4207646a6f",
+    "user_prompt_sha256": "38b8b5300899b178cd5de37b93f1ca5f9d8a47e722e2bed4985dcb4f0c9251e6"
+  },
+  "instruccion_reproduccion": "Instalar requirements.txt y ejecutar ejecutar_agente.py con la misma entrada, modelo y prompts. Los hashes permiten verificar que los artefactos no cambiaron."
+}
