@@ -64,6 +64,8 @@ La autonomía es L2: el agente analiza y recomienda, pero no ejecuta decisiones.
 
 Si el responsable suplente no está disponible, no existe sustitución automática: la corrida queda `pendiente_de_aprobacion`, se archiva con sus artefactos y la decisión permanece bloqueada. Un tercer aprobador sólo puede actuar si fue designado previamente y por escrito por la Dirección.
 
+La Brand Manager y su suplente aprueban o rechazan la **validez analítica** y pueden autorizar la circulación del reporte como recomendación. Esa aprobación no equivale a autorizar presupuesto, promociones, cambios de portfolio, forecast o abastecimiento: esas decisiones continúan en los circuitos corporativos de las áreas competentes. La matriz completa de autoridad está en `GOBIERNO.md`.
+
 El procedimiento completo está en [GOBIERNO.md](GOBIERNO.md). El historial funcional y los enlaces directos a las versiones de los prompts están en [VERSIONES.md](VERSIONES.md).
 
 ## Análisis económico
