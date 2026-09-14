@@ -60,9 +60,11 @@ La reproducción técnica de la corrida 01 registró dos llamadas a `gemini-3.5-
 
 Proyección basada en esta medición:
 
-| Escenario | Corridas | Costo mensual | Costo anual |
-|---|---:|---:|---:|
-| Base | 2 por mes | USD 0,045416 | USD 0,544992 |
-| Intensivo | 8 por mes | USD 0,181664 | USD 2,179968 |
+| Escenario | Corridas semanales | Corridas anuales | Costo semanal | Costo anual |
+|---|---:|---:|---:|---:|
+| Base | 0,5 (2 por mes) | 24 | USD 0,011354 | USD 0,544992 |
+| Intensivo | 2 (8 por mes) | 96 | USD 0,045416 | USD 2,179968 |
+
+La proyección semanal utiliza cuatro semanas operativas por mes: `costo por corrida × corridas semanales`. La proyección anual utiliza `costo por corrida × corridas anuales`. El escenario base equivale a una corrida cada dos semanas y el intensivo a dos corridas por semana.
 
 La medición se conserva en `corridas/corrida_05/log_consumo_api.json` y `log_consola_api.txt`. El costo efectivo puede ser cero bajo el nivel gratuito; la proyección utiliza tarifa paga para estimar una operación sostenible.
