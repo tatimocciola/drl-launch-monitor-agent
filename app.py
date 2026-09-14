@@ -101,6 +101,29 @@ def mostrar_tarjetas(elementos, color):
         )
 
 
+def calcular_metricas_ejecucion(responses, modelo):
+    usos = [getattr(response, "usage_metadata", None) for response in responses]
+    usos = [uso for uso in usos if uso is not None]
+    tokens_entrada = sum(int(getattr(uso, "prompt_token_count", 0) or 0) for uso in usos)
+    tokens_salida = sum(int(getattr(uso, "candidates_token_count", 0) or 0) for uso in usos)
+    tokens_totales = sum(int(getattr(uso, "total_token_count", 0) or 0) for uso in usos)
+    tarifa_entrada = 0.30
+    tarifa_salida = 2.50
+    costo = tokens_entrada / 1_000_000 * tarifa_entrada + tokens_salida / 1_000_000 * tarifa_salida
+    return {
+        "modelo": modelo,
+        "llamadas_modelo": len(usos),
+        "tokens_entrada": tokens_entrada,
+        "tokens_salida": tokens_salida,
+        "tokens_totales": tokens_totales,
+        "tarifa_entrada_usd_por_millon": tarifa_entrada,
+        "tarifa_salida_usd_por_millon": tarifa_salida,
+        "costo_estimado_usd": round(costo, 6),
+        "tarifa_referencia_fecha": "2026-09-13",
+        "tarifa_referencia_url": "https://ai.google.dev/gemini-api/docs/pricing",
+    }
+
+
 st.title("DRL Core Portfolio Agent")
 st.caption("Evaluación supervisada del rol de Vodka, Limón, Green Apple y Red Berries en 473 ml y 1 L")
 
@@ -125,6 +148,7 @@ if ejecutar:
     st.session_state.pop("resultado", None)
     st.session_state.pop("controles_salida", None)
     st.session_state.pop("tokens", None)
+    st.session_state.pop("metricas_ejecucion", None)
     if not archivos:
         st.error("Seleccioná al menos un CSV normalizado o un ZIP de Scentia.")
         st.stop()
@@ -205,6 +229,7 @@ if ejecutar:
             st.session_state["controles_salida"] = infracciones
         st.session_state["resultado"] = resultado_generado
         st.session_state["tokens"] = [getattr(r, "usage_metadata", None) for r in responses]
+        st.session_state["metricas_ejecucion"] = calcular_metricas_ejecucion(responses, modelo)
     except Exception as error:
         mensaje = str(error)
         if "429" in mensaje or "RESOURCE_EXHAUSTED" in mensaje:
@@ -251,9 +276,25 @@ with st.expander("Calidad, contradicciones y revisión humana"):
     st.write("Puntos a revisar:", resultado["revision_humana"]["puntos_a_revisar"])
     st.write("Responsable final:", resultado["revision_humana"]["responsable_final"])
 
+metricas_ejecucion = st.session_state.get("metricas_ejecucion", {})
+if metricas_ejecucion:
+    with st.expander("Consumo y costo estimado de la corrida"):
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Tokens de entrada", f"{metricas_ejecucion['tokens_entrada']:,}")
+        m2.metric("Tokens de salida", f"{metricas_ejecucion['tokens_salida']:,}")
+        m3.metric("Costo estimado", f"USD {metricas_ejecucion['costo_estimado_usd']:.6f}")
+        st.caption(
+            f"{metricas_ejecucion['llamadas_modelo']} llamada(s) a {metricas_ejecucion['modelo']}. "
+            "Estimación a tarifa paga de referencia; el costo efectivo puede ser USD 0 en el nivel gratuito."
+        )
+
+resultado_descarga = dict(resultado)
+if metricas_ejecucion:
+    resultado_descarga["metricas_ejecucion"] = metricas_ejecucion
+
 st.download_button(
     "Descargar salida JSON",
-    data=json.dumps(resultado, ensure_ascii=False, indent=2),
+    data=json.dumps(resultado_descarga, ensure_ascii=False, indent=2),
     file_name=f"{resultado['corrida']['id']}_salida.json",
     mime="application/json",
 )
