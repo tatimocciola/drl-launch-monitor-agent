@@ -47,10 +47,11 @@ El sistema genera:
 
 * `salida.json`: resultado estructurado del agente.
 * `integridad_datos.json`: controles ejecutados, errores bloqueantes, advertencias y cobertura de la entrada.
+* `reporte_reproducibilidad.json`: hashes SHA-256 de entradas y prompts, versiones del entorno y resultado de integridad.
 * `log_consumo_api.json`: modelo, tokens medidos mediante `usage_metadata`, tarifas de referencia y costo estimado.
 * `reporte_ejecucion.md`: síntesis automática de entrada, integridad, conclusión, acciones, consumo y supervisión.
 
-La aplicación Streamlit entrega estos cuatro archivos dentro de un único ZIP.
+La aplicación Streamlit entrega estos cinco archivos dentro de un único ZIP.
 
 ## Validaciones de integridad
 
@@ -59,6 +60,8 @@ Antes de invocar el modelo se controlan columnas obligatorias, archivo vacío, d
 ## Supervisión y contingencia
 
 La autonomía es L2: el agente analiza y recomienda, pero no ejecuta decisiones. La Brand Manager es la responsable primaria. Si está ausente, revisa el Marketing Manager y documenta nombre, fecha y decisión. Si ambos están ausentes, la corrida queda archivada y pendiente de aprobación; ninguna recomendación comercial, de portfolio, inversión, distribución o abastecimiento se ejecuta automáticamente.
+
+El procedimiento completo está en [GOBIERNO.md](GOBIERNO.md). El historial funcional y los enlaces directos a las versiones de los prompts están en [VERSIONES.md](VERSIONES.md).
 
 ## Análisis económico
 
