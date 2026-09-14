@@ -1,5 +1,6 @@
 import json
 import os
+import hashlib
 from io import BytesIO
 from datetime import datetime, timezone
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -8,7 +9,13 @@ import streamlit as st
 from google import genai
 from google.genai import types
 
-from ejecutar_agente import RESPONSE_SCHEMA, generar_reporte_ejecucion, leer_prompt, validar_y_preparar
+from ejecutar_agente import (
+    RESPONSE_SCHEMA,
+    generar_reporte_ejecucion,
+    generar_reporte_reproducibilidad,
+    leer_prompt,
+    validar_y_preparar,
+)
 from preparar_scentia import normalizar_scentia_zip
 
 
@@ -121,6 +128,7 @@ def calcular_metricas_ejecucion(responses, modelo):
         "tarifa_entrada_usd_por_millon": tarifa_entrada,
         "tarifa_salida_usd_por_millon": tarifa_salida,
         "costo_estimado_usd": round(costo, 6),
+        "fuente_medicion": "usage_metadata devuelto por Gemini API",
         "tarifa_referencia_fecha": "2026-09-13",
         "tarifa_referencia_url": "https://ai.google.dev/gemini-api/docs/pricing",
     }
@@ -152,6 +160,7 @@ if ejecutar:
     st.session_state.pop("tokens", None)
     st.session_state.pop("metricas_ejecucion", None)
     st.session_state.pop("reporte_integridad", None)
+    st.session_state.pop("reporte_reproducibilidad", None)
     if not archivos:
         st.error("Seleccioná al menos un CSV normalizado o un ZIP de Scentia.")
         st.stop()
@@ -182,6 +191,21 @@ if ejecutar:
         raiz = __import__("pathlib").Path(__file__).resolve().parent
         system_prompt = leer_prompt(raiz / "prompts" / "system_prompt.md")
         user_template = leer_prompt(raiz / "prompts" / "user_prompt.md")
+        archivos_reproducibilidad = [
+            {
+                "nombre": archivo.name,
+                "bytes": len(archivo.getvalue()),
+                "sha256": hashlib.sha256(archivo.getvalue()).hexdigest(),
+            }
+            for archivo in archivos
+        ]
+        reporte_reproducibilidad = generar_reporte_reproducibilidad(
+            archivos_reproducibilidad,
+            reporte_integridad,
+            modelo,
+            system_prompt,
+            user_template,
+        )
         fecha = datetime.now(timezone.utc).isoformat()
         datos = df.where(df.notna(), None).to_dict(orient="records")
         prompt = (
@@ -234,6 +258,7 @@ if ejecutar:
         st.session_state["tokens"] = [getattr(r, "usage_metadata", None) for r in responses]
         st.session_state["metricas_ejecucion"] = calcular_metricas_ejecucion(responses, modelo)
         st.session_state["reporte_integridad"] = reporte_integridad
+        st.session_state["reporte_reproducibilidad"] = reporte_reproducibilidad
     except Exception as error:
         mensaje = str(error)
         if "429" in mensaje or "RESOURCE_EXHAUSTED" in mensaje:
@@ -282,6 +307,7 @@ with st.expander("Calidad, contradicciones y revisión humana"):
 
 metricas_ejecucion = st.session_state.get("metricas_ejecucion", {})
 reporte_integridad = st.session_state.get("reporte_integridad", {})
+reporte_reproducibilidad = st.session_state.get("reporte_reproducibilidad", {})
 if reporte_integridad:
     with st.expander("Validaciones automáticas de integridad"):
         st.write("Estado:", reporte_integridad["estado"])
@@ -307,6 +333,10 @@ paquete = BytesIO()
 with ZipFile(paquete, "w", ZIP_DEFLATED) as zip_salida:
     zip_salida.writestr("salida.json", json.dumps(resultado_descarga, ensure_ascii=False, indent=2))
     zip_salida.writestr("integridad_datos.json", json.dumps(reporte_integridad, ensure_ascii=False, indent=2))
+    zip_salida.writestr(
+        "reporte_reproducibilidad.json",
+        json.dumps(reporte_reproducibilidad, ensure_ascii=False, indent=2),
+    )
     zip_salida.writestr("log_consumo_api.json", json.dumps(metricas_ejecucion, ensure_ascii=False, indent=2))
     zip_salida.writestr("reporte_ejecucion.md", reporte_final)
 
