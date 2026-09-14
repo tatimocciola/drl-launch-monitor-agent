@@ -499,6 +499,13 @@ def main() -> None:
     (args.salida / "log_consumo_api.json").write_text(
         json.dumps(consumo, ensure_ascii=False, indent=2), encoding="utf-8"
     )
+    (args.salida / "log_consola_api.txt").write_text(
+        f"[{fecha}] corrida={args.corrida} modelo={args.modelo} "
+        f"prompt_tokens={consumo['tokens_entrada']} output_tokens={consumo['tokens_salida']} "
+        f"total_tokens={consumo['tokens_totales']} costo_estimado_usd={consumo['costo_estimado_usd']:.6f} "
+        "fuente=Gemini_usage_metadata\n",
+        encoding="utf-8",
+    )
     (args.salida / "reporte_ejecucion.md").write_text(
         generar_reporte_ejecucion(resultado, reporte_integridad, consumo), encoding="utf-8"
     )
