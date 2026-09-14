@@ -174,7 +174,10 @@ Si la Brand Manager no está disponible:
 
 1. La revisión se deriva al Marketing Manager como responsable suplente.
 2. El suplente debe revisar evidencia, limitaciones, conflictos entre fuentes y acciones propuestas, dejando nombre, fecha y decisión en `revision_humana.md`.
+   Su autoridad se limita a aprobar o rechazar la validez analítica y autorizar la circulación del reporte como recomendación dentro de planes ya aprobados. No puede autorizar por sí solo inversiones, promociones, cambios de portfolio, forecast ni abastecimiento.
 3. Si tampoco está disponible el Marketing Manager, la corrida puede generarse y archivarse, pero queda con estado `pendiente_de_aprobacion` y no se ejecuta ninguna recomendación.
    Si el responsable suplente no está disponible, no existe un tercer reemplazo automático. Otro aprobador sólo puede intervenir si fue designado previamente y por escrito por la Dirección; sin esa designación, la decisión permanece bloqueada.
 4. Las decisiones de inversión, portfolio, distribución o abastecimiento nunca se aprueban por silencio ni por vencimiento de plazo.
 5. Cuando regrese la responsable primaria, debe revisar cualquier decisión aprobada por suplencia que implique un cambio comercial material.
+
+La aprobación humana de la corrida no constituye una orden de ejecución. Cada área funcional conserva la autoridad definida por las políticas internas para aprobar presupuesto y acciones operativas.
